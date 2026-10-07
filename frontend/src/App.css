@@ -110,6 +110,10 @@
   text-align: center;
 }
 
+* {
+  font-family: "Poppins", sans-serif;
+}
+
 .NavOrange {
   background: #ef9f27;
   background: linear-gradient(
@@ -120,6 +124,59 @@
 }
 
 .NavGreen {
+  background: #639922;
+  background: linear-gradient(
+    180deg,
+    rgba(99, 153, 34, 1) 0%,
+    rgba(251, 246, 218, 1) 100%
+  );
+}
+
+.footerLogo {
+  height: 90%;
+}
+
+.logoBackground {
+  height: 10rem;
+  padding: 1rem;
+  background-color: #fbf6da;
+  border-radius: 50%;
+  border: 2px solid #3b6d11;
+}
+
+.contactInfoFooter {
+  margin: 0;
+  margin-left: 1rem;
+}
+
+.pageLinks {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.footerLink{
+  text-decoration: none;
+  color: #000;
+  size: 16px;
+  margin-top: 1rem;
+
+}
+
+.FooterOrange {
+  background: #ef9f27;
+  background: linear-gradient(
+    0deg,
+    rgba(239, 159, 39, 1) 0%,
+    rgba(251, 246, 218, 1) 100%
+  );
+  margin: 0;
+  padding: 0rem 5rem;
+  padding-bottom: 2rem;
+
+}
+
+.FooterGreen {
   background: #639922;
   background: linear-gradient(
     180deg,
@@ -154,15 +211,115 @@
 }
 .homeSection {
   margin: 0 !important;
-  padding: 0 8rem;
   padding-top: 4rem;
   height: 100%;
 }
 
 .homeHero {
   min-height: 100vh;
-  background: url("./assets/images/02-Hero-Default.png") no-repeat;
+  background: url("./assets/images/HomeHero.png") no-repeat;
   background-size: cover;
+}
+
+.ImageContainers {
+  height: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.Images {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+/* #OurStoryContainer{
+  background-color: #fbf6da;
+  padding: 1rem;
+} */
+
+.cardLink {
+  color: #639922;
+  transition: all ease-in;
+}
+
+.cardLink:hover {
+  color: #3b6d11;
+}
+
+.cardSubtitle {
+  color: #639922 !important;
+}
+
+.teamCardContainer {
+  border-radius: 50%;
+  overflow: hidden;
+  height: 120px;
+  width: 120px;
+  margin: 0;
+  padding: 0;
+  img {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.StaffSubtitle {
+  font-size: 15px !important;
+  color: #639922 !important;
+}
+
+.teamCards {
+  box-shadow: 8px 8px 10px #454545;
+  filter: none !important;
+}
+.splide__track {
+  padding-top: 1rem;
+  padding-bottom: 2rem; /* shadow is offset down, so give this more room */
+}
+
+.homeCards {
+  border-radius: 16px !important;
+  padding: 5px;
+
+  filter: drop-shadow(8px 8px 10px #454545);
+  background-color: #fbf6da !important;
+  position: relative;
+  --line-color: #3b6d11;
+  --line-width: 3px;
+  --inset: 14px;
+  --outline-radius: 10px;
+}
+
+.homeCards::before {
+  content: "";
+  position: absolute;
+  inset: var(--inset);
+  border: var(--line-width) solid var(--line-color);
+  border-radius: var(--outline-radius);
+  pointer-events: none;
+}
+
+.homeCards {
+  padding: calc(var(--inset) + 1.5rem);
+}
+
+.contactCard {
+  background-color: #eaf3de !important;
+  p {
+    margin: 0;
+  }
+}
+
+.blueButton {
+  border: none;
+  border-radius: 16px;
+  padding: 1rem;
+  background-color: #85b7eb;
+  filter: drop-shadow(8px 8px 10px #454545);
+  width: 12rem;
+  display: flex;
+  justify-content: space-between;
 }
 
 h1 {
@@ -178,6 +335,17 @@ h2 {
   font-weight: 500 !important;
 }
 
+h3 {
+  font-family: "Poppins", sans-serif;
+  font-weight: 700 !important;
+}
+
+h4 {
+  font-family: "Poppins", sans-serif;
+  font-style: normal !important;
+  font-weight: 700 !important;
+}
+
 @media only screen and (max-width: 600px) {
   h1 {
     font-size: 25px !important;
@@ -186,6 +354,13 @@ h2 {
 
   h2 {
     font-size: 20px !important;
+    text-align: center;
+  }
+  h3 {
+    font-size: 20px !important;
+    text-align: center;
+  }
+  .HomeBodyText {
     text-align: center;
   }
 }
@@ -200,6 +375,13 @@ h2 {
     font-size: 20px !important;
     text-align: center;
   }
+  h3 {
+    font-size: 20px !important;
+    text-align: center;
+  }
+  .HomeBodyText {
+    text-align: center;
+  }
 }
 
 @media only screen and (min-width: 768px) {
@@ -212,6 +394,13 @@ h2 {
     font-size: 22px !important;
     text-align: center;
   }
+  h3 {
+    font-size: 34px !important;
+    text-align: center;
+  }
+  .HomeBodyText {
+    text-align: center;
+  }
 }
 @media only screen and (min-width: 992px) {
   h1 {
@@ -221,6 +410,13 @@ h2 {
 
   h2 {
     font-size: 25px !important;
+    text-align: start;
+  }
+  h3 {
+    font-size: 40px !important;
+    text-align: start;
+  }
+  .HomeBodyText {
     text-align: start;
   }
 }
