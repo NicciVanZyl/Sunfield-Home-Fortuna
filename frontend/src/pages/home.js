@@ -10,7 +10,7 @@ import Carousel from "../components/carousel";
 
 function Home() {
   return (
-    <Container fluid className="PageBackground">
+    <Container fluid className="PageBackgroundYellow">
       <div className="homeHero">
         <Row className="homeHeroGradient">
           <Col lg="7">

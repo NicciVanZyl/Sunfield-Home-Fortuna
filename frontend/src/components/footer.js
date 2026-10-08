@@ -14,14 +14,12 @@ import Facebook from "../assets/images/facebook.svg";
 
 function Footer() {
   const location = useLocation();
-  const [navClass, setNavClass] = useState("FooterOrange");
-  if (
-    location.pathname === "/" ||
-    location.pathname === "/Contact" ||
-    location.pathname === "/AdminDashboard"
-  ) {
-    setNavClass("FooterGreen");
-  }
+  const navClass = ["/", "/Contact", "/AdminDashboard"].includes(
+    location.pathname,
+  )
+    ? "FooterGreen"
+    : "FooterOrange";
+
   return (
     <div className={navClass}>
       <Container fluid>

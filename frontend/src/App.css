@@ -155,12 +155,11 @@
   align-items: center;
 }
 
-.footerLink{
+.footerLink {
   text-decoration: none;
   color: #000;
   size: 16px;
   margin-top: 1rem;
-
 }
 
 .FooterOrange {
@@ -173,19 +172,21 @@
   margin: 0;
   padding: 0rem 5rem;
   padding-bottom: 2rem;
-
 }
 
 .FooterGreen {
   background: #639922;
   background: linear-gradient(
-    180deg,
+    0deg,
     rgba(99, 153, 34, 1) 0%,
     rgba(251, 246, 218, 1) 100%
   );
+  margin: 0;
+  padding: 0rem 5rem;
+  padding-bottom: 2rem;
 }
 
-.PageBackground {
+.PageBackgroundYellow {
   padding: 0 !important;
 
   background: #fac775;
@@ -196,12 +197,22 @@
     rgba(251, 246, 218, 1) 100%
   );
 }
+.PageBackgroundGreen {
+  padding: 0 !important;
+  background: #639922;
+  background: radial-gradient(
+    circle,
+    rgba(99, 153, 34, 1) 0%,
+    rgba(161, 194, 120, 1) 22%,
+    rgba(251, 246, 218, 1) 100%
+  );
+}
 
 .homeHeroGradient {
   margin: 0 !important;
   padding: 0 8rem;
   padding-top: 4rem;
-  height: 100%;
+  height: 80vh;
   background: #fbf6da;
   background: linear-gradient(
     180deg,
@@ -216,8 +227,15 @@
 }
 
 .homeHero {
-  min-height: 100vh;
+  min-height: 90vh;
   background: url("./assets/images/HomeHero.png") no-repeat;
+  background-size: cover;
+}
+
+.donateHero {
+  min-height: 90vh;
+  background: url("./assets/images/DonateHero.png") no-repeat;
+  background-position: 50% 30%; /* or: 50% 50% */
   background-size: cover;
 }
 
@@ -232,11 +250,6 @@
   height: 100%;
   width: 100%;
 }
-
-/* #OurStoryContainer{
-  background-color: #fbf6da;
-  padding: 1rem;
-} */
 
 .cardLink {
   color: #639922;
@@ -320,6 +333,127 @@
   width: 12rem;
   display: flex;
   justify-content: space-between;
+  transition: all ease-in;
+  transition-duration: 0.5ms;
+}
+.blueButton:hover {
+  transform: scale(1.05);
+  background-color: #378add;
+  color: #fff;
+}
+
+.donateHeroButtons {
+  width: 15rem;
+}
+
+.notebook {
+  width: 100%;
+  height: 80vh;
+  margin: 0 auto;
+  background: url("./assets/images/notebookDouble.svg") right / 100% 100%
+    no-repeat;
+  background-size: contain;
+  background-position: 80% 50%;
+}
+
+.notebookContent {
+  padding-left: 20rem;
+  padding-right: 20rem;
+  padding-top: 3rem;
+}
+
+.notebookList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  column-count: 2;
+  column-gap: 2rem;
+  line-height: 1.62cqw;
+}
+@media (max-width: 1100px) {
+  .notebook {
+    container-type: inline-size; /* makes cqw relative to the notebook */
+    height: auto; /* let the aspect ratio set the height */
+    aspect-ratio: 1103 / 635; /* notebookDouble.svg viewBox */
+    max-width: 900px;
+    background-size: 100% 100%; /* overrides "contain" */
+    background-position: center;
+    --ruling: 2.1cqw; /* distance between two ruled lines */
+  }
+
+  .notebookContent {
+    padding: 8% 20% 0 8%; /* top / right (clears pencil) / bottom / left */
+  }
+
+  .notebookTitle {
+    margin: 0;
+    font-size: 2.4cqw;
+    line-height: calc(var(--ruling) * 2);
+  }
+
+  .notebookList {
+    column-count: 2;
+    column-gap: 6cqw;
+    font-size: 2cqw;
+    line-height: calc(var(--ruling) * 2);
+  }
+
+  .notebookList li {
+    break-inside: avoid;
+  }
+}
+
+@media (max-width: 768px) {
+  .notebook {
+    aspect-ratio: 357 / 460;
+    max-width: 520px;
+    background-image: url("./assets/images/notebookSingle.svg");
+    background-size: 100% 100%;
+    background-position: center;
+    --ruling: 4.4cqw;
+  }
+
+  .notebookContent {
+    padding: 9% 22% 0 11%;
+  }
+
+  .notebookTitle {
+    font-size: 5.5cqw;
+    line-height: calc(var(--ruling) * 2);
+  }
+
+  .notebookList {
+    column-count: 1;
+    font-size: 4.4cqw;
+    line-height: calc(var(--ruling) * 2);
+  }
+}
+
+.ContactCards {
+  border-radius: 16px !important;
+  padding: 5px;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(8px 8px 10px #454545);
+  background-color: #eaf3de !important;
+  position: relative;
+  --line-color: #ef9f27;
+  --line-width: 3px;
+  --inset: 14px;
+  --outline-radius: 10px;
+}
+
+.ContactCards::before {
+  content: "";
+  position: absolute;
+  inset: var(--inset);
+  border: var(--line-width) solid var(--line-color);
+  border-radius: var(--outline-radius);
+  pointer-events: none;
+}
+
+.ContactCards {
+  padding: calc(var(--inset) + 1.5rem);
 }
 
 h1 {
@@ -346,6 +480,10 @@ h4 {
   font-weight: 700 !important;
 }
 
+.donateHeaderText {
+  font-weight: 500 !important;
+}
+
 @media only screen and (max-width: 600px) {
   h1 {
     font-size: 25px !important;
@@ -360,8 +498,20 @@ h4 {
     font-size: 20px !important;
     text-align: center;
   }
+  h4 {
+    font-size: 20px !important;
+    text-align: center;
+  }
   .HomeBodyText {
     text-align: center;
+  }
+  .donateHeaderText {
+    text-align: center;
+  }
+  .pageLinks {
+    display: block;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
 }
 
@@ -379,8 +529,20 @@ h4 {
     font-size: 20px !important;
     text-align: center;
   }
+  h4 {
+    font-size: 20px !important;
+    text-align: center;
+  }
   .HomeBodyText {
     text-align: center;
+  }
+  .donateHeaderText {
+    text-align: center;
+  }
+  .pageLinks {
+    display: block;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
 }
 
@@ -398,8 +560,20 @@ h4 {
     font-size: 34px !important;
     text-align: center;
   }
+  h4 {
+    font-size: 20px !important;
+    text-align: center;
+  }
   .HomeBodyText {
     text-align: center;
+  }
+  .donateHeaderText {
+    text-align: center;
+  }
+  .pageLinks {
+    display: block;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
 }
 @media only screen and (min-width: 992px) {
@@ -416,7 +590,44 @@ h4 {
     font-size: 40px !important;
     text-align: start;
   }
+  h4 {
+    text-align: start;
+  }
   .HomeBodyText {
     text-align: start;
   }
+  .donateHeaderText {
+    text-align: start;
+  }
+
+  .pageLinks {
+    display: flex;
+    align-items: center;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+.AccordionMainBody .accordion-item,
+.AccordionMainBody .accordion-button,
+.AccordionMainBody .accordion-button:not(.collapsed),
+.AccordionMainBody .accordion-collapse,
+.AccordionMainBody .accordion-body {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* remove the white card look: border and rounded corners */
+.AccordionMainBody .accordion-item {
+  border: 0 !important;
+  border-radius: 0 !important;
+  border-bottom: 2px solid #3b6d11;
+}
+
+/* optional: thin divider between items */
+.AccordionMainBody .accordion-item {
+  padding: 0 !important;
+}
+.AccordionMainBody .accordion-header {
+  border-bottom: 2px solid #000 !important;
 }

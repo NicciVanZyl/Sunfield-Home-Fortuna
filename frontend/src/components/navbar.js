@@ -7,14 +7,12 @@ import Logo from "../assets/images/Logo.svg";
 
 function Navigation() {
   const location = useLocation();
-  const [navClass, setNavClass] = useState("NavOrange");
-  if (
-    location.pathname === "/" ||
-    location.pathname === "/Contact" ||
-    location.pathname === "/AdminDashboard"
-  ) {
-    setNavClass("NavGreen");
-  }
+  const navClass = ["/", "/Contact", "/AdminDashboard"].includes(
+    location.pathname
+  )
+    ? "NavGreen"
+    : "NavOrange";
+
 
   return (
     <Navbar expand="lg" className={navClass}>
