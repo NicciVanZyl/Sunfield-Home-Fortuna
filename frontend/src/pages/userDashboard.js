@@ -1,6 +1,12 @@
+import DashboardNav from "../components/dashboardNavUser";
+
 function UserDashboard() {
   return (
-    <div>User Dashboard</div>
+    <div style={{ position: "relative" }}>
+      <DashboardNav>
+        <div>User Dashboard</div>
+      </DashboardNav>
+    </div>
   );
 }
 

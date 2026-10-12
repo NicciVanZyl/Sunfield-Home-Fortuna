@@ -617,17 +617,461 @@ h4 {
   box-shadow: none !important;
 }
 
-/* remove the white card look: border and rounded corners */
 .AccordionMainBody .accordion-item {
   border: 0 !important;
   border-radius: 0 !important;
   border-bottom: 2px solid #3b6d11;
 }
 
-/* optional: thin divider between items */
 .AccordionMainBody .accordion-item {
   padding: 0 !important;
 }
 .AccordionMainBody .accordion-header {
   border-bottom: 2px solid #000 !important;
+}
+
+.auth-container {
+  position: relative;
+  width: 100%;
+  height: 80vh;
+
+  overflow: hidden;
+}
+
+.mobile-header {
+  display: none;
+}
+
+.overlay-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.overlay-panel {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  padding: 0 40px;
+  text-align: center;
+}
+
+.form-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: white;
+  z-index: 10;
+  transition: transform 0.6s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.form-card.slide-left {
+  transform: translateX(0%);
+}
+
+.form-card.slide-right {
+  transform: translateX(100%);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0 2.5rem;
+}
+
+.desktop-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #111827;
+}
+
+.name-row {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.input-field {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.9rem;
+}
+
+.input-field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+input {
+  width: 100%;
+  height: 42px;
+  padding: 0 0.8rem;
+  outline: none;
+  border: 1px solid #f3f4f6;
+  background-color: #f9fafb;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+input:focus {
+  border-color: #3b82f6;
+  background-color: #ffffff;
+}
+
+button.formButton {
+  width: 100%;
+  height: 46px;
+  background: #639922;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  cursor: pointer;
+}
+
+button.outline {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  margin-top: 1rem;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .auth-container {
+    height: 80vh;
+    background-image: none;
+  }
+
+  .overlay-container {
+    display: none;
+  }
+
+  .mobile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: url(./assets/images/SignupImage.png) no-repeat;
+    background-size: cover;
+    color: white;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  .mobile-header::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background-image: url("./assets/images/SignupImage.png");
+    background-size: cover;
+    background-position: center;
+    filter: brightness(50%);
+    z-index: 0;
+  }
+
+  .mobile-header::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(13, 19, 31, 0.7);
+    z-index: 1;
+  }
+
+  .mobile-header h2,
+  .mobile-header p,
+  .mobile-header .tab-switch {
+    position: relative;
+    z-index: 2;
+  }
+
+  .overlay-panel h3,
+  .overlay-panel button {
+    position: relative;
+    z-index: 1;
+  }
+  .mobile-header h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin: 0;
+  }
+
+  .mobile-header p {
+    font-size: 0.9rem;
+    color: #9ca3af;
+    margin-top: 4px;
+    margin-bottom: 1.25rem;
+  }
+
+  .tab-switch {
+    display: flex;
+    width: 100%;
+    background-color: #3b6d11;
+    padding: 4px;
+    border-radius: 8px;
+  }
+
+  .tab-switch button {
+    flex: 1;
+    padding: 8px 0;
+    background: transparent;
+    border: none;
+    color: #9ca3af;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+  }
+
+  .tab-switch button.active {
+    background: #639922;
+    color: white;
+  }
+
+  .form-card {
+    position: relative;
+    width: 100%;
+    height: auto;
+    transform: none !important;
+    box-shadow: none;
+    padding: 2rem 1rem;
+  }
+
+  .desktop-title {
+    display: none;
+  }
+
+  form {
+    padding: 0 1rem;
+  }
+}
+
+.overlay-panel::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  filter: blur(8px);
+  filter: brightness(50%);
+  z-index: 0;
+}
+.panel-left::before {
+  background: url(./assets/images/LoginImage.png) no-repeat;
+  background-size: cover;
+}
+
+.overlay-panel h3,
+.overlay-panel button {
+  position: relative;
+  z-index: 1;
+}
+.loginBackground {
+  min-height: 80vh;
+}
+
+.password-toggle.btn {
+  color: #2e7d32;
+  background-color: #ffffff;
+  border-left: none;
+}
+
+.password-toggle.btn:hover {
+  color: #ffffff;
+  background-color: #2e7d32;
+  border-color: #2e7d32;
+}
+
+.password-toggle.btn:active,
+.password-toggle.btn:focus {
+  color: #ffffff;
+  background-color: #1b5e20;
+  border-color: #1b5e20;
+  box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
+}
+
+/* Put these in your own stylesheet, imported AFTER bootstrap's CSS.
+   Scoping everything under .input-field keeps the rules specific enough
+   to beat Bootstrap's defaults without needing !important. */
+
+.input-field {
+  --field-border: #cfd8d3;
+  --field-border-hover: #8fae9c;
+  --field-accent: #2e7d32;
+  --field-accent-glow: rgba(46, 125, 50, 0.2);
+  --field-error: #c62828;
+  --field-error-glow: rgba(198, 40, 40, 0.2);
+  --field-bg: #ffffff;
+  --field-text: #1f2a24;
+  --field-radius: 10px;
+}
+
+/* Labels */
+.input-field .form-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--field-text);
+  margin-bottom: 0.35rem;
+}
+
+/* Inputs: default state */
+.input-field .form-control {
+  background-color: var(--field-bg);
+  color: var(--field-text);
+  border: 1.5px solid var(--field-border);
+  border-radius: var(--field-radius);
+  padding: 0.65rem 0.9rem;
+  font-size: 1rem;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.input-field .form-control::placeholder {
+  color: #9aa8a0;
+}
+
+/* Hover */
+.input-field .form-control:hover {
+  border-color: var(--field-border-hover);
+}
+
+/* Focus (replaces Bootstrap's blue glow) */
+.input-field .form-control:focus {
+  border-color: var(--field-accent);
+  box-shadow: 0 0 0 4px var(--field-accent-glow);
+  outline: none;
+}
+
+/* Disabled */
+.input-field .form-control:disabled {
+  background-color: #eef2ef;
+  color: #7b8a82;
+}
+
+/* Invalid state: after the first submit attempt */
+.was-validated .input-field .form-control:invalid,
+.input-field .form-control.is-invalid {
+  border-color: var(--field-error);
+  background-image: none; /* removes Bootstrap's built-in error icon */
+  padding-right: 0.9rem; /* ...and the space it reserved */
+}
+
+.was-validated .input-field .form-control:invalid:focus,
+.input-field .form-control.is-invalid:focus {
+  border-color: var(--field-error);
+  box-shadow: 0 0 0 4px var(--field-error-glow);
+}
+
+/* Valid state: set border-color to var(--field-border) if you'd rather
+   not show green on correct fields */
+.was-validated .input-field .form-control:valid,
+.input-field .form-control.is-valid {
+  border-color: var(--field-accent);
+  background-image: none;
+  padding-right: 0.9rem;
+}
+
+.was-validated .input-field .form-control:valid:focus,
+.input-field .form-control.is-valid:focus {
+  box-shadow: 0 0 0 4px var(--field-accent-glow);
+}
+
+/* Error message text */
+.input-field .invalid-feedback {
+  color: var(--field-error);
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+}
+
+.DashboardLogo {
+  display: flex;
+  justify-content: center;
+}
+
+.adminLogout {
+  width: 100%;
+  height: 3rem;
+  border-radius: 16px;
+  border: none;
+  background-color: #c0dd97;
+  transition: all 0.5s ease;
+}
+.adminLogout:hover {
+  background-color: #2e7d32;
+  color: #fff;
+  font-weight: 600;
+}
+
+.userLogout {
+  width: 100%;
+  height: 3rem;
+  border-radius: 16px;
+  border: none;
+  background-color: #ef9f27;
+  transition: all 0.5s ease;
+}
+.userLogout:hover {
+  background-color: #fac775;
+  color: #000;
+  font-weight: 600;
+}
+
+.dashboardItem {
+  width: 100%;
+  margin-top: 1rem !important;
+  margin-bottom: 0.5rem;
+  border-bottom: 2px solid #000;
+}
+
+.DetailedItems {
+  border: none;
+  border-bottom: 1px solid #000;
+}
+
+.adminPageBackground {
+  padding: 2rem;
+  margin: 0;
+  height: 100%;
+}
+
+.ProgressBar {
+  background-color: #2e7d32;
+  border-radius: 16px;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+.ProgressBarContainer {
+  border: 1px solid #2e7d32;
+  border-radius: 16px;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  width: 100%;
 }

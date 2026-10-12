@@ -1,6 +1,10 @@
+import DashboardNav from "../components/dashboardNavAdmin";
+
 function AdminDashboard() {
   return (
-    <div>Admin Dashboard</div>
+    <div style={{ height: "90vh", position: "relative" }}>
+      <DashboardNav></DashboardNav>
+    </div>
   );
 }
 

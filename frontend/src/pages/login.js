@@ -1,6 +1,248 @@
+import React, { useState, useEffect, useRef } from "react";
+import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import InputGroup from "react-bootstrap/InputGroup";
+import { Eye, EyeSlash } from "react-bootstrap-icons";
+
+const EMPTY_FORM = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
+
 function Login() {
+  const [isLogin, setIsLogin] = useState(true);
+  const [validated, setValidated] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  // Each password field gets its own independent toggle
+  const renderToggle = (show, setShow, label) => (
+    <Button
+      type="button"
+      variant="outline-secondary"
+      className="password-toggle"
+      onClick={() => setShow((prev) => !prev)}
+      aria-label={`${show ? "Hide" : "Show"} ${label}`}
+      aria-pressed={show}
+    >
+      {show ? <Eye aria-hidden="true" /> : <EyeSlash aria-hidden="true" />}
+    </Button>
+  );
+  const [formData, setFormData] = useState(EMPTY_FORM);
+
+  const confirmRef = useRef(null);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Custom rule: confirm password must match password.
+  // setCustomValidity makes the browser treat the field as :invalid,
+  // so form.checkValidity() and Bootstrap's styling both pick it up.
+  useEffect(() => {
+    if (confirmRef.current) {
+      const mismatch = formData.confirmPassword !== formData.password;
+      confirmRef.current.setCustomValidity(
+        mismatch ? "Passwords do not match" : ""
+      );
+    }
+  }, [formData.password, formData.confirmPassword, isLogin]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+
+    setValidated(true);
+    if (!form.checkValidity()) return;
+
+    const inputData = isLogin
+      ? { email: formData.email, password: formData.password }
+      : { ...formData };
+
+    console.log(inputData);
+  };
+
+  const switchMode = (login) => {
+    setIsLogin(login);
+    setValidated(false); // hide errors from the other mode
+    setFormData((prev) => ({
+      ...prev,
+      firstName: "",
+      lastName: "",
+      confirmPassword: "",
+    }));
+  };
+
   return (
-    <div>Login</div>
+    <Container fluid className="PageBackgroundGreen loginBackground">
+      <div className="auth-container">
+        <div className="mobile-header">
+          <h2>{isLogin ? "Welcome Back" : "Join Us"}</h2>
+          <p>
+            {isLogin
+              ? "Please enter your credentials to login"
+              : "Create an account in seconds"}
+          </p>
+          <div className="tab-switch">
+            <button
+              type="button"
+              className={isLogin ? "active" : ""}
+              onClick={() => switchMode(true)}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              className={!isLogin ? "active" : ""}
+              onClick={() => switchMode(false)}
+            >
+              Sign Up
+            </button>
+          </div>
+        </div>
+
+        <div className={`form-card ${isLogin ? "slide-left" : "slide-right"}`}>
+          {/* noValidate turns off the browser's popup bubbles so
+              Bootstrap's inline feedback is shown instead */}
+          <Form noValidate validated={validated} onSubmit={handleSubmit}>
+            <h2 className="desktop-title">{isLogin ? "Sign In" : "Sign Up"}</h2>
+
+            {!isLogin && (
+              <div className="name-row">
+                <Form.Group className="input-field" controlId="firstName">
+                  <Form.Label>First Name</Form.Label>
+                  <Form.Control
+                    required
+                    type="text"
+                    name="firstName"
+                    value={formData.firstName}
+                    placeholder="Jane"
+                    autoComplete="given-name"
+                    onChange={handleChange}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Please enter your first name.
+                  </Form.Control.Feedback>
+                </Form.Group>
+
+                <Form.Group className="input-field" controlId="lastName">
+                  <Form.Label>Last Name</Form.Label>
+                  <Form.Control
+                    required
+                    type="text"
+                    name="lastName"
+                    value={formData.lastName}
+                    placeholder="Doe"
+                    autoComplete="family-name"
+                    onChange={handleChange}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Please enter your last name.
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </div>
+            )}
+
+            <Form.Group className="input-field" controlId="email">
+              <Form.Label>Email Address</Form.Label>
+              <Form.Control
+                required
+                type="email"
+                name="email"
+                value={formData.email}
+                placeholder="name@example.com"
+                autoComplete="email"
+                onChange={handleChange}
+              />
+              <Form.Control.Feedback type="invalid">
+                Please enter a valid email address.
+              </Form.Control.Feedback>
+            </Form.Group>
+
+            <Form.Group className="input-field" controlId="password">
+              <Form.Label>Password</Form.Label>
+              <InputGroup hasValidation>
+                <Form.Control
+                  required
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  placeholder="••••••••"
+                  // Only enforce a minimum length when creating an account,
+                  // so existing users with shorter passwords can still log in
+                  minLength={isLogin ? undefined : 8}
+                  autoComplete={isLogin ? "current-password" : "new-password"}
+                  onChange={handleChange}
+                />
+                {renderToggle(showPassword, setShowPassword, "password")}
+                <Form.Control.Feedback type="invalid">
+                  {isLogin
+                    ? "Please enter your password."
+                    : "Password must be at least 8 characters."}
+                </Form.Control.Feedback>
+              </InputGroup>
+            </Form.Group>
+
+            {!isLogin && (
+              <Form.Group className="input-field" controlId="confirmPassword">
+                <Form.Label>Confirm Password</Form.Label>
+                <InputGroup hasValidation>
+                  <Form.Control
+                    ref={confirmRef}
+                    required
+                    type={showConfirm ? "text" : "password"}
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    placeholder="••••••••"
+                    autoComplete="new-password"
+                    onChange={handleChange}
+                  />
+                  {renderToggle(showConfirm, setShowConfirm, "confirm password")}
+                  <Form.Control.Feedback type="invalid">
+                    {formData.confirmPassword
+                      ? "Passwords do not match."
+                      : "Please confirm your password."}
+                  </Form.Control.Feedback>
+                </InputGroup>
+              </Form.Group>
+            )}
+
+            <button type="submit" className="formButton">
+              {isLogin ? "Sign In" : "Register"}
+            </button>
+          </Form>
+        </div>
+
+        <div className="overlay-container">
+          <div className="overlay-panel panel-left">
+            <h3>Already have an account?</h3>
+            <button
+              type="button"
+              className="outline"
+              onClick={() => switchMode(true)}
+            >
+              Login
+            </button>
+          </div>
+
+          <div className="overlay-panel panel-right">
+            <h3>Not with us? Sign up Now!</h3>
+            <button
+              type="button"
+              className="outline"
+              onClick={() => switchMode(false)}
+            >
+              Sign Up
+            </button>
+          </div>
+        </div>
+      </div>
+    </Container>
   );
 }
 
