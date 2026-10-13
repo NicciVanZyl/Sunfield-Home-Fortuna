@@ -48,7 +48,7 @@ function Login() {
     if (confirmRef.current) {
       const mismatch = formData.confirmPassword !== formData.password;
       confirmRef.current.setCustomValidity(
-        mismatch ? "Passwords do not match" : ""
+        mismatch ? "Passwords do not match" : "",
       );
     }
   }, [formData.password, formData.confirmPassword, isLogin]);
@@ -107,8 +107,7 @@ function Login() {
         </div>
 
         <div className={`form-card ${isLogin ? "slide-left" : "slide-right"}`}>
-          {/* noValidate turns off the browser's popup bubbles so
-              Bootstrap's inline feedback is shown instead */}
+          {/* No browser feedback uses other validation */}
           <Form noValidate validated={validated} onSubmit={handleSubmit}>
             <h2 className="desktop-title">{isLogin ? "Sign In" : "Sign Up"}</h2>
 
@@ -202,7 +201,11 @@ function Login() {
                     autoComplete="new-password"
                     onChange={handleChange}
                   />
-                  {renderToggle(showConfirm, setShowConfirm, "confirm password")}
+                  {renderToggle(
+                    showConfirm,
+                    setShowConfirm,
+                    "confirm password",
+                  )}
                   <Form.Control.Feedback type="invalid">
                     {formData.confirmPassword
                       ? "Passwords do not match."

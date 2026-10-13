@@ -27,7 +27,6 @@ function EditWishlistModal({ open, setClosed, items }) {
   return (
     <>
       <Modal
-        style={{ zIndex: "10000" }}
         fullscreen={true}
         show={show}
         onHide={handleClose}

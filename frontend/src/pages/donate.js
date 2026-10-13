@@ -3,7 +3,9 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Arrow from "../assets/images/Arrow.svg";
-
+import { useEffect, useState } from "react";
+import ItemDonation from "../components/donationItem";
+import MoneyDonation from "../components/paymentModal";
 
 const items = [
   "Butter",
@@ -16,13 +18,25 @@ const items = [
   "Vegetables",
   "Cereal",
   "Toothpaste",
-
 ];
 const half = Math.ceil(items.length / 2);
 
 function Donate() {
+  const [paymentOpen, setPaymentOpen] = useState(false);
+  const [itemOpen, setItemOpen] = useState(false);
+
   return (
     <Container fluid className="PageBackgroundYellow">
+      <MoneyDonation
+        open={paymentOpen}
+        setClosed={() => setPaymentOpen(false)}
+      ></MoneyDonation>
+
+      <ItemDonation
+        open={itemOpen}
+        setClosed={() => setItemOpen(false)}
+      ></ItemDonation>
+
       <div className="donateHero">
         <Row className="homeHeroGradient">
           <Col lg="8">
@@ -34,10 +48,16 @@ function Donate() {
                 promise for the people who call this community home.
               </p>
               <div className="d-flex gap-4 flex-column flex-lg-row align-items-center">
-                <button className="blueButton donateHeroButtons">
+                <button
+                  className="blueButton donateHeroButtons"
+                  onClick={() => setPaymentOpen(true)}
+                >
                   Monetary Donation <img src={Arrow}></img>
                 </button>
-                <button className="blueButton donateHeroButtons">
+                <button
+                  className="blueButton donateHeroButtons"
+                  onClick={() => setItemOpen(true)}
+                >
                   Donate items<img src={Arrow}></img>
                 </button>
               </div>

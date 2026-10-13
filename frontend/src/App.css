@@ -616,7 +616,7 @@ input {
   outline: none;
   border: 1px solid #f3f4f6;
   background-color: #f9fafb;
-  border-radius: 6px;
+  border-radius: 16px;
   font-size: 0.95rem;
 }
 
@@ -631,11 +631,18 @@ button.formButton {
   background: #639922;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 16px;
   font-size: 1rem;
   font-weight: 600;
   margin-top: 1rem;
   cursor: pointer;
+  transition: all 0.5s ease;
+}
+
+button.formButton:hover {
+  background: #1b5e20;
+  color: white;
+  font-weight: 700;
 }
 
 button.outline {
@@ -643,7 +650,7 @@ button.outline {
   border: 1px solid white;
   color: white;
   padding: 10px 24px;
-  border-radius: 6px;
+  border-radius: 16px;
   font-size: 0.95rem;
   margin-top: 1rem;
   cursor: pointer;
@@ -724,7 +731,7 @@ button.outline {
     width: 100%;
     background-color: #3b6d11;
     padding: 4px;
-    border-radius: 8px;
+    border-radius: 16px;
   }
 
   .tab-switch button {
@@ -735,7 +742,7 @@ button.outline {
     color: #9ca3af;
     font-size: 0.95rem;
     font-weight: 600;
-    border-radius: 6px;
+    border-radius: 16px;
     transition: all 0.2s ease;
   }
 
@@ -836,7 +843,7 @@ button.outline {
   background-color: var(--field-bg);
   color: var(--field-text);
   border: 1.5px solid var(--field-border);
-  border-radius: var(--field-radius);
+  border-radius: 16px;
   padding: 0.65rem 0.9rem;
   font-size: 1rem;
   transition:
@@ -971,4 +978,85 @@ button.outline {
 .ModalExtras {
   background-color: #fbf6da !important;
   border: none;
+}
+
+.modal-backdrop {
+  z-index: 1399 !important;
+}
+
+.modal {
+  z-index: 1400 !important;
+}
+
+.donationNumbers {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: #97c459;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 600;
+}
+
+.tabHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  padding: 2rem 1.5rem 1.5rem;
+  text-align: center;
+  width: 25em;
+}
+
+.paymentSwitch {
+  display: flex;
+  width: 100%;
+  background-color: #85b7eb;
+  padding: 4px;
+  border-radius: 16px;
+}
+
+.paymentSwitch button {
+  flex: 1;
+  padding: 8px 0;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 16px;
+  transition: all 0.2s ease;
+}
+
+.paymentSwitch button.active {
+  background: #185fa5;
+  color: white;
+}
+
+.paymentCards {
+  border-radius: 16px !important;
+  padding: 5px;
+
+  filter: drop-shadow(8px 8px 10px #454545);
+  background-color: #ffffff !important;
+  position: relative;
+  --line-color: #185fa5;
+  --line-width: 3px;
+  --inset: 14px;
+  --outline-radius: 10px;
+}
+
+.paymentCards::before {
+  content: "";
+  position: absolute;
+  inset: var(--inset);
+  border: var(--line-width) solid var(--line-color);
+  border-radius: var(--outline-radius);
+  pointer-events: none;
+}
+
+.paymentCards {
+  padding: calc(var(--inset) + 1.5rem);
 }

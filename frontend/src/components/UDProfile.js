@@ -24,7 +24,7 @@ const EMPTY_FORM = {
 };
 
 function UDProfile({ setActivePage }) {
-  const [editing, setEditing] = useState(true);
+  const [editing, setEditing] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [validated, setValidated] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
