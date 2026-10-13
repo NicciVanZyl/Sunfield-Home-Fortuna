@@ -16,10 +16,13 @@ import Typography from "@mui/material/Typography";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ProfileIcon from "@mui/icons-material/Person";
 import OverviewPage from "./UDOverview";
+import Donations from "./UDDonations";
 import Profile from "./UDProfile";
 import Logo from "../assets/images/Logo.svg";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Link } from "react-router-dom";
+import CartIcon from "@mui/icons-material/ShoppingBagRounded";
+
 
 const theme = createTheme({
   components: {
@@ -208,8 +211,23 @@ const drawerWidth = 300;
 
 // But the items in the list
 const navItems = [
-  { text: "Overview", icon: <DashboardIcon />, component: <OverviewPage /> },
-  { text: "Profile", icon: <ProfileIcon />, component: <Profile /> },
+  {
+    text: "Overview",
+    icon: <DashboardIcon />,
+    component: (setActivePage) => (
+      <OverviewPage setActivePage={setActivePage} />
+    ),
+  },
+  {
+    text: "Profile",
+    icon: <ProfileIcon />,
+    component: (setActivePage) => <Profile setActivePage={setActivePage} />,
+  },
+  {
+    text: "My Donations",
+    icon: <CartIcon />,
+    component: (setActivePage) => <Donations setActivePage={setActivePage} />,
+  },
 ];
 
 function DashboardNav() {
@@ -229,17 +247,22 @@ function DashboardNav() {
   };
 
   // Render the correct page
-  const activeComponent = navItems.find(
-    (item) => item.text === activePage,
-  )?.component;
+  const activeComponent = navItems
+    .find((item) => item.text === activePage)
+    ?.component(setActivePage);
 
   const drawer = (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+      }}
+    >
       <Toolbar className="DashboardLogo">
         <img className="" src={Logo}></img>
       </Toolbar>
-      <Divider />
-      <List>
+      <List sx={{ flex: 1 }}>
         {navItems.map(({ text, icon }) => (
           <ListItem key={text} disablePadding>
             <ListItemButton
@@ -260,8 +283,10 @@ function DashboardNav() {
         <Link to="/Donate" className="footerLink">
           Donate
         </Link>
-        <button className="userLogout">Log Out</button>
       </List>
+      <div className="mb-4">
+        <button className="userLogout">Log Out</button>
+      </div>
     </div>
   );
 
@@ -328,6 +353,7 @@ function DashboardNav() {
             variant="permanent"
             sx={{
               display: { xs: "none", md: "block" },
+              height: "100%",
               "& .MuiDrawer-paper": {
                 width: drawerWidth,
                 position: "relative",
@@ -348,6 +374,9 @@ function DashboardNav() {
             p: 3,
             overflow: "auto",
             mt: { xs: "48px", md: 0 },
+            background: "#fac775",
+            background:
+              "radial-gradient(circle,rgba(250, 199, 117, 1) 0%,rgba(255, 221, 158, 1) 45%,rgba(251, 246, 218, 1) 100%  )",
           }}
         >
           {activeComponent}
