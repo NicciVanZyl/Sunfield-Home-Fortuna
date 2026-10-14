@@ -30,7 +30,8 @@ jobs:
           app_location: "./frontend" # Points only to your React app
           api_location: ""           # Leave empty because your backend isn't serverless
           output_location: "build"   # Or "dist" depending on your build tool
-
+        env:
+          CI: false
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
