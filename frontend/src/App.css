@@ -225,8 +225,9 @@
   width: 12rem;
   display: flex;
   justify-content: space-between;
-  transition: all ease-in;
-  transition-duration: 0.5ms;
+  text-decoration: none;
+  color: #000;
+  transition: all 0.2s ease-in;
 }
 .blueButton:hover {
   transform: scale(1.05);
@@ -1059,4 +1060,123 @@ button.outline {
 
 .paymentCards {
   padding: calc(var(--inset) + 1.5rem);
+}
+
+.BlueModalBackground {
+  background: #5fa4ed;
+  background: radial-gradient(
+    circle,
+    rgba(95, 164, 237, 1) 0%,
+    rgba(255, 255, 255, 1) 100%
+  );
+}
+.BlueModalExtras {
+  background-color: #e1f0ff;
+}
+.itemDonateItems {
+  border-bottom: 1px solid #000;
+  margin-bottom: 0.5rem;
+}
+.donateSummary {
+  border-bottom: 2px solid #000;
+  margin-bottom: 1rem;
+}
+.form-select.donateInputs {
+  background-color: #bde6ff;
+  background-image:
+    var(--bs-form-select-bg-img), linear-gradient(to left, #bde6ff 0%, #fff 50%) !important;
+  background-position:
+    right 0.75rem center,
+    0 0;
+  background-size:
+    16px 12px,
+    100% 100%;
+  background-repeat: no-repeat;
+  border-radius: 16px;
+}
+.donateTextInputs {
+  background: #bde6ff;
+  background: linear-gradient(
+    270deg,
+    rgba(189, 230, 255, 1) 0%,
+    rgba(255, 255, 255, 1) 50%
+  ) !important;
+}
+
+.modalGreen {
+  background: #639922;
+  background: radial-gradient(
+    circle,
+    rgba(99, 153, 34, 1) 0%,
+    rgba(161, 194, 120, 1) 22%,
+    rgba(251, 246, 218, 1) 100%
+  );
+}
+.modalInputsGreen {
+  background: rgb(227, 255, 194);
+  background: linear-gradient(
+    270deg,
+    rgb(227, 255, 194) 0%,
+    rgba(255, 255, 255, 1) 50%
+  ) !important;
+}
+
+.form-select.modalSelectsGreen {
+  background-color: rgb(227, 255, 194);
+  background-image:
+    var(--bs-form-select-bg-img),
+    linear-gradient(to left, rgb(227, 255, 194) 0%, rgba(255, 255, 255, 1) 50%) !important;
+  background-position:
+    right 0.75rem center,
+    0 0;
+  background-size:
+    16px 12px,
+    100% 100%;
+  background-repeat: no-repeat;
+  border-radius: 16px;
+}
+
+.loginInputs {
+  background: rgb(227, 255, 194);
+  background: linear-gradient(
+    270deg,
+    rgb(227, 255, 194) 0%,
+    rgba(255, 255, 255, 1) 50%
+  ) !important;
+}
+.profileInputs {
+  background: #fac775;
+  background: linear-gradient(
+    270deg,
+    rgba(250, 199, 117, 1) 0%,
+    rgba(255, 255, 255, 1) 50%
+  ) !important;
+}
+
+.NavGreen .navbar-nav .nav-link,
+.NavOrange .navbar-nav .nav-link {
+  color: #000;
+  font-weight: 500;
+  padding: 0.75rem 1rem;
+  transition: color 0.2s ease;
+}
+
+.NavGreen .navbar-nav .nav-link:hover,
+.NavOrange .navbar-nav .nav-link:hover {
+  transform: scale(1.05);
+  font-weight: 600;
+}
+
+.NavGreen .navbar-nav .nav-link.active,
+.NavOrange .navbar-nav .nav-link.active {
+  text-decoration: underline;
+  font-weight: 600 !important;
+}
+
+.footerLink {
+  transition: all 0.2s ease;
+}
+.footerLink:hover {
+  transform: scale(1.05);
+  font-weight: 500;
 }

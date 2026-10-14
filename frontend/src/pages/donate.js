@@ -6,6 +6,7 @@ import Arrow from "../assets/images/Arrow.svg";
 import { useEffect, useState } from "react";
 import ItemDonation from "../components/donationItem";
 import MoneyDonation from "../components/paymentModal";
+import { Link } from "react-router-dom";
 
 const items = [
   "Butter",
@@ -88,9 +89,9 @@ function Donate() {
         <Col lg={12} className="">
           <div className="d-flex flex-lg-row flex-column justify-content-between align-items-center homeCards contactCard">
             <p>Have questions? We are here to help.</p>
-            <button className="blueButton">
+            <Link to="/Contact" className="blueButton">
               Contact us <img src={Arrow}></img>
-            </button>
+            </Link>
           </div>
         </Col>
       </Row>

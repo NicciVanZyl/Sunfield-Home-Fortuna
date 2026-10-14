@@ -7,6 +7,7 @@ import Arrow from "../assets/images/Arrow.svg";
 import MissionImage from "../assets/images/OurMission.png";
 import HomeCards from "../components/homePageCards";
 import Carousel from "../components/carousel";
+import { Link } from "react-router-dom";
 
 function Home() {
   return (
@@ -126,9 +127,9 @@ function Home() {
         <Col lg={12} className="">
           <div className="d-flex flex-lg-row flex-column justify-content-between align-items-center homeCards contactCard">
             <p>Have questions? We are here to help.</p>
-            <button className="blueButton">
+            <Link to="/Contact" className="blueButton">
               Contact us <img src={Arrow}></img>
-            </button>
+            </Link>
           </div>
         </Col>
       </Row>

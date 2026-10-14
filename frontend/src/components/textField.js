@@ -8,6 +8,7 @@ function textField({
   id,
   value,
   errorMessage,
+  styleName
 }) {
   return (
     <Form.Group className="input-field" controlId={id}>
@@ -20,6 +21,7 @@ function textField({
         onChange={() => {
           console.log(value);
         }}
+        
       />
       <Form.Control.Feedback type="invalid">
         {errorMessage}

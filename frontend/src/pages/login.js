@@ -123,6 +123,7 @@ function Login() {
                     placeholder="Jane"
                     autoComplete="given-name"
                     onChange={handleChange}
+                    className="loginInputs"
                   />
                   <Form.Control.Feedback type="invalid">
                     Please enter your first name.
@@ -139,6 +140,7 @@ function Login() {
                     placeholder="Doe"
                     autoComplete="family-name"
                     onChange={handleChange}
+                    className="loginInputs"
                   />
                   <Form.Control.Feedback type="invalid">
                     Please enter your last name.
@@ -157,6 +159,7 @@ function Login() {
                 placeholder="name@example.com"
                 autoComplete="email"
                 onChange={handleChange}
+                className="loginInputs"
               />
               <Form.Control.Feedback type="invalid">
                 Please enter a valid email address.
@@ -177,6 +180,7 @@ function Login() {
                   minLength={isLogin ? undefined : 8}
                   autoComplete={isLogin ? "current-password" : "new-password"}
                   onChange={handleChange}
+                  className="loginInputs"
                 />
                 {renderToggle(showPassword, setShowPassword, "password")}
                 <Form.Control.Feedback type="invalid">
@@ -200,6 +204,7 @@ function Login() {
                     placeholder="••••••••"
                     autoComplete="new-password"
                     onChange={handleChange}
+                    className="loginInputs"
                   />
                   {renderToggle(
                     showConfirm,

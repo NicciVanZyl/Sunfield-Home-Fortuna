@@ -144,6 +144,7 @@ function UDProfile({ setActivePage }) {
                     placeholder="Jane"
                     autoComplete="given-name"
                     onChange={handleChange}
+                    className="profileInputs"
                   />
                   <Form.Control.Feedback type="invalid">
                     Please enter your first name.
@@ -170,6 +171,7 @@ function UDProfile({ setActivePage }) {
                     placeholder="Doe"
                     autoComplete="family-name"
                     onChange={handleChange}
+                    className="profileInputs"
                   />
                   <Form.Control.Feedback type="invalid">
                     Please enter your last name.
@@ -196,6 +198,7 @@ function UDProfile({ setActivePage }) {
                     placeholder="name@example.com"
                     autoComplete="email"
                     onChange={handleChange}
+                    className="profileInputs"
                   />
                   <Form.Control.Feedback type="invalid">
                     Please enter a valid email address.
@@ -218,9 +221,10 @@ function UDProfile({ setActivePage }) {
                     required
                     type="text"
                     name="phoneNumber"
-                    value={formData.location}
+                    value={formData.phoneNumber}
                     placeholder="0605096876"
                     onChange={handleChange}
+                    className="profileInputs"
                   />
                   <Form.Control.Feedback type="invalid">
                     Please enter your phone number.
@@ -246,6 +250,7 @@ function UDProfile({ setActivePage }) {
                     value={formData.location}
                     placeholder="Pretoria"
                     onChange={handleChange}
+                    className="profileInputs"
                   />
                   <Form.Control.Feedback type="invalid">
                     Please enter your location.
@@ -278,6 +283,7 @@ function UDProfile({ setActivePage }) {
                         isLogin ? "current-password" : "new-password"
                       }
                       onChange={handleChange}
+                      className="profileInputs"
                     />
                     {renderToggle(showPassword, setShowPassword, "password")}
                     <Form.Control.Feedback type="invalid">
@@ -310,6 +316,7 @@ function UDProfile({ setActivePage }) {
                       placeholder="••••••••"
                       autoComplete="new-password"
                       onChange={handleChange}
+                      className="profileInputs"
                     />
                     {renderToggle(
                       showConfirm,
@@ -339,9 +346,7 @@ function UDProfile({ setActivePage }) {
       <Row className="my-5">
         <Form noValidate validated={validated} onSubmit={handleSubmit}>
           <Col sx={12} className="mb-5">
-            <div className="homeCards">
-              <ProfileDetails></ProfileDetails>
-            </div>
+            <div className="homeCards">{ProfileDetails()}</div>
             <Col className="mt-5 mx-auto " sm={3}>
               <button
                 className="userLogout"

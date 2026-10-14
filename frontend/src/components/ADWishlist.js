@@ -5,7 +5,7 @@ import Col from "react-bootstrap/Col";
 import WishlistItem from "./wishlistItem";
 import { useState, useEffect } from "react";
 import AddModal from "./addWishlistModal";
-import EditModal from "./wishlistModal";
+import EditModal from "./editWishlistModal";
 
 function ADWishlist({ setActivePage }) {
   const [openAddModal, setOpenAddModal] = useState(false);
@@ -17,23 +17,24 @@ function ADWishlist({ setActivePage }) {
       quality: "Good",
       category: "Food",
       id: "1",
+      alreadyObtained: "1",
     },
     {
-      itemName: "Milk",
+      itemName: "Bread",
       quantity: "2",
       quality: "Good",
       category: "Food",
       id: "2",
     },
     {
-      itemName: "Milk",
+      itemName: "Coffee",
       quantity: "2",
       quality: "Good",
       category: "Food",
       id: "3",
     },
     {
-      itemName: "Milk",
+      itemName: "Sugar",
       quantity: "2",
       quality: "Good",
       category: "Food",
@@ -125,15 +126,15 @@ function ADWishlist({ setActivePage }) {
                 <div className="d-flex gap-3">
                   <button
                     className="adminLogout"
-                    // onClick={() => setOpenAddModal(true)}
+                    onClick={() => setOpenAddModal(true)}
                   >
-                    Edit Wishlist
+                    Add An Item
                   </button>
                   <button
                     className="adminLogout"
-                    // onClick={() => setOpenEditModal(true)}
+                    onClick={() => setOpenEditModal(true)}
                   >
-                    Add An Item
+                    Edit Wishlist
                   </button>
                 </div>
               </Stack>

@@ -6,13 +6,25 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Text from "./textField";
-
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import InputGroup from "react-bootstrap/InputGroup";
 function ItemDonation({ open, setClosed }) {
   const [isRecurring, setIsRecurring] = useState(true);
-
+  const [paymentAmount, setPaymentAmount] = useState("");
+  const [cardName, setCardName] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
+  const [CVV, setCVV] = useState("");
+  const [date, setDate] = useState("");
   const [show, setShow] = useState(false);
+
   const handleClose = () => {
     setShow(false);
+    setCVV("");
+    setCardName("");
+    setCardNumber("");
+    setDate("");
+    setPaymentAmount("");
     if (setClosed) {
       setClosed(false);
     }
@@ -28,6 +40,25 @@ function ItemDonation({ open, setClosed }) {
     setIsRecurring(recurring);
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name == "Payment") {
+      setPaymentAmount(value);
+    }
+    if (name == "CardName") {
+      setCardName(value);
+    }
+    if (name == "CardNumber") {
+      setCardNumber(value);
+    }
+    if (name == "CardCode") {
+      setCVV(value);
+    }
+    if (name == "Date") {
+      setDate(value);
+    }
+  };
+
   return (
     <>
       <Modal
@@ -39,7 +70,11 @@ function ItemDonation({ open, setClosed }) {
         centered={true}
         fullscreen="lg-down"
       >
-        <Modal.Header style={{ padding: "2rem" }} closeButton>
+        <Modal.Header
+          style={{ padding: "2rem" }}
+          className="BlueModalExtras"
+          closeButton
+        >
           <Modal.Title>
             Make A Payment
             <h5 style={{ fontSize: "16px", paddingRight: "2rem" }}>
@@ -50,7 +85,7 @@ function ItemDonation({ open, setClosed }) {
             </h5>
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body className="d-flex flex-column gap-2">
+        <Modal.Body className="d-flex flex-column gap-2 BlueModalBackground">
           <div className="d-flex flex-row align-items-center gap-3">
             <div className="donationNumbers">1</div>
             <h4 style={{ marginBottom: "0" }}>
@@ -80,54 +115,82 @@ function ItemDonation({ open, setClosed }) {
             <div className="donationNumbers">2</div>
             <h4 style={{ marginBottom: "0" }}>Donation Amount</h4>
           </div>
-          <Text
-            type={"Number"}
-            label={"Amount"}
-            placeholder={200}
-            name={"Payment"}
-            id={"Payment"}
-            errorMessage={"Please enter an amount."}
-          ></Text>
+
+          <Form.Group className="input-field" controlId={"Payment"}>
+            <Form.Label>Amount</Form.Label>
+            <Form.Control
+              type="Number"
+              name="Payment"
+              value={paymentAmount}
+              placeholder="200"
+              onChange={handleChange}
+              className="donateTextInputs"
+              min={0}
+            />
+            <Form.Control.Feedback type="invalid">
+              {"Please enter an amount."}
+            </Form.Control.Feedback>
+          </Form.Group>
           <div className="d-flex flex-row align-items-center gap-3">
             <div className="donationNumbers">3</div>
             <h4 style={{ marginBottom: "0" }}>Your Card Details</h4>
           </div>
           <div className="paymentCards">
-            <Text
-              type={"text"}
-              label={"Name on Card"}
-              placeholder={"J Doe"}
-              name={"CardName"}
-              id={"CardName"}
-              errorMessage={"Please enter the name of the card."}
-            ></Text>
-            <Text
-              type={"text"}
-              label={"Card Number"}
-              placeholder={""}
-              name={"CardNumber"}
-              id={"CardNumber"}
-              errorMessage={"Please enter a card Number."}
-            ></Text>
-            <Text
-              type={"text"}
-              label={"Expiration Date"}
-              placeholder={"MM/YYYY"}
-              name={"Date"}
-              id={"Date"}
-              errorMessage={"Please enter an Expiration Date."}
-            ></Text>
-
-            <Text
-              type={"text"}
-              label={"Security Code"}
-              placeholder={"***"}
-              name={"CardCode"}
-              id={"CardCode"}
-              errorMessage={
-                "Please enter the Security Code on the back of the card."
-              }
-            ></Text>
+            <Form.Group className="input-field" controlId={"CardName"}>
+              <Form.Label>Name on Card</Form.Label>
+              <Form.Control
+                type="text"
+                name="CardName"
+                value={cardName}
+                placeholder="J Doe"
+                onChange={handleChange}
+                className="donateTextInputs"
+              />
+              <Form.Control.Feedback type="invalid">
+                {"Please enter the name of the card."}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group className="input-field" controlId={"CardNumber"}>
+              <Form.Label>Card Number</Form.Label>
+              <Form.Control
+                type="text"
+                name="CardNumber"
+                value={cardNumber}
+                onChange={handleChange}
+                className="donateTextInputs"
+              />
+              <Form.Control.Feedback type="invalid">
+                {"Please enter a card Number."}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group className="input-field" controlId={"Date"}>
+              <Form.Label>Expiration Date</Form.Label>
+              <Form.Control
+                type="text"
+                name="Date"
+                value={date}
+                placeholder="MM/YYYY"
+                onChange={handleChange}
+                className="donateTextInputs"
+              />
+              <Form.Control.Feedback type="invalid">
+                {"Please enter an Expiration Date."}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group className="input-field" controlId={"CardCode"}>
+              <Form.Label>Security Code</Form.Label>
+              <Form.Control
+                type="text"
+                name="CardCode"
+                value={CVV}
+                placeholder="***"
+                onChange={handleChange}
+                className="donateTextInputs"
+              />
+              <Form.Control.Feedback type="invalid">
+                {"Please enter the Security Code on the back of the card."}
+              </Form.Control.Feedback>
+            </Form.Group>
           </div>
           <button className="formButton my-4" onClick={() => handleClose()}>
             Pay
