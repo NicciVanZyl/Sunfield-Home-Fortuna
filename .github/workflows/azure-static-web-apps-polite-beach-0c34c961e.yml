@@ -27,11 +27,9 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_BEACH_0C34C961E }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
           action: "upload"
-          ###### Repository/Build Configurations ######
-          app_location: "./frontend" # App source code path
-          api_location: "" # Api source code path - optional
-          output_location: "dist" # Built app content directory - optional
-          ###### End of Repository/Build Configurations ######
+          app_location: "./frontend" # Points only to your React app
+          api_location: ""           # Leave empty because your backend isn't serverless
+          output_location: "build"   # Or "dist" depending on your build tool
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
