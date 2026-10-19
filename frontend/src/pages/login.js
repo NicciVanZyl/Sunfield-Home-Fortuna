@@ -4,6 +4,11 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import InputGroup from "react-bootstrap/InputGroup";
 import { Eye, EyeSlash } from "react-bootstrap-icons";
+import { BASE_URL, authHeader } from "../context/api";
+import axios from "axios";
+import { useAuth } from "../context/authContext";
+import SuccessModal from "../components/successModal";
+import { useNavigate } from "react-router-dom";
 
 const EMPTY_FORM = {
   firstName: "",
@@ -14,10 +19,58 @@ const EMPTY_FORM = {
 };
 
 function Login() {
+  const { login } = useAuth();
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [validated, setValidated] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [message, setMessage] = useState("");
+  const [title, setTitle] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const SetLoginData = (userData, Token) => {
+    // Stores JWT token and user data in local storage
+    login(userData, Token);
+  };
+
+  const Login = async ({ email, password }) => {
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/auth/login`,
+        { email, password },
+        authHeader(),
+      );
+      SetLoginData(res.data.user, res.data.token);
+      setMessage(
+        "You've logged in successfully! You will be redirected shortly",
+      );
+      setTitle("Login Successful");
+      setErrorMessage("");
+      setShowModal(true);
+    } catch (error) {
+      setErrorMessage(error);
+    }
+  };
+  const Register = async ({ firstName, lastName, email, password }) => {
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/auth/register`,
+        { firstName, lastName, email, password },
+        authHeader(),
+      );
+      SetLoginData(res.data.user, res.data.token);
+      setMessage(
+        "Your account has been created successfully. Please log in to access your dashboard",
+      );
+      setTitle("Account Creation Successful");
+      setErrorMessage("");
+      setShowModal(true);
+    } catch (error) {
+      setErrorMessage(error.response?.data?.error);
+    }
+  };
 
   // Each password field gets its own independent toggle
   const renderToggle = (show, setShow, label) => (
@@ -64,22 +117,42 @@ function Login() {
       ? { email: formData.email, password: formData.password }
       : { ...formData };
 
-    console.log(inputData);
+    if (isLogin) {
+      Login({ email: inputData.email, password: inputData.password });
+    } else {
+      Register({
+        firstName: inputData.firstName,
+        lastName: inputData.lastName,
+        email: inputData.email,
+        password: inputData.password,
+      });
+    }
   };
 
   const switchMode = (login) => {
+    setFormData(EMPTY_FORM);
     setIsLogin(login);
     setValidated(false); // hide errors from the other mode
-    setFormData((prev) => ({
-      ...prev,
-      firstName: "",
-      lastName: "",
-      confirmPassword: "",
-    }));
+    setErrorMessage("");
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    if (isLogin) {
+      navigate("/Home");
+    } else if (!isLogin) {
+      setIsLogin(true);
+    }
   };
 
   return (
     <Container fluid className="PageBackgroundGreen loginBackground">
+      <SuccessModal
+        show={showModal}
+        onClose={handleModalClose}
+        title={title}
+        message={message}
+      ></SuccessModal>
       <div className="auth-container">
         <div className="mobile-header">
           <h2>{isLogin ? "Welcome Back" : "Join Us"}</h2>
@@ -110,6 +183,7 @@ function Login() {
           {/* No browser feedback uses other validation */}
           <Form noValidate validated={validated} onSubmit={handleSubmit}>
             <h2 className="desktop-title">{isLogin ? "Sign In" : "Sign Up"}</h2>
+            <h4 style={{ color: "red" }}>{errorMessage}</h4>
 
             {!isLogin && (
               <div className="name-row">
