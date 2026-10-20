@@ -10,11 +10,13 @@ import UserDashboard from "./pages/userDashboard";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Footer from "./components/footer";
 import { AuthProvider } from "./context/authContext";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <ScrollToTop></ScrollToTop>
         <Navigation></Navigation>
         <Routes>
           <Route path="/" element={<Login />}></Route>

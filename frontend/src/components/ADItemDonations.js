@@ -4,30 +4,45 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import DashboardItem from "./dashboardItemDetailed";
 import { useState, useEffect } from "react";
+import { BASE_URL, authHeader } from "../context/api";
+import axios from "axios";
 
 function ADItemDonations({ setActivePage }) {
-  const [items, setItems] = useState([
-    {
-      itemName: "Milk",
-      quantity: "2",
-      quality: "Good",
-    },
-    {
-      itemName: "Milk",
-      quantity: "2",
-      quality: "Good",
-    },
-    {
-      itemName: "Milk",
-      quantity: "2",
-      quality: "Good",
-    },
-    {
-      itemName: "Milk",
-      quantity: "2",
-      quality: "Good",
-    },
-  ]);
+  const [items, setItems] = useState([]);
+
+  const GetItemDetailedData = async () => {
+    try {
+      const res = await axios.get(
+        `${BASE_URL}/donations/itemDetails`,
+        authHeader(),
+      );
+      setItems(res.data);
+    } catch (error) {
+      console.log(error.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    GetItemDetailedData();
+  }, []);
+
+  const RenderItemCards = () => {
+    if (!items || items.length === 0) {
+      return <p>No Items Donated Yet</p>;
+    } else {
+      return Array.from({ length: items.length }, (_, i) => (
+        <>
+          <DashboardItem
+            donorName={items[i].donorName}
+            date={items[i].donationDate}
+            category={""}
+            details={items[i].totalItems}
+            items={items[i].items}
+          ></DashboardItem>
+        </>
+      ));
+    }
+  };
 
   return (
     <Container fluid className="adminPageBackground">
@@ -41,34 +56,7 @@ function ADItemDonations({ setActivePage }) {
               <h5 style={{ textAlign: "center" }}>All Item Donations</h5>
 
               <Stack className="d-flex justify-content-center align-items-center">
-                <DashboardItem
-                  donorName={"Jane Doe"}
-                  date={"May 12, 2026"}
-                  category={"Clothing"}
-                  details={"16 items"}
-                  items={items}
-                ></DashboardItem>{" "}
-                <DashboardItem
-                  donorName={"Jane Doe"}
-                  date={"May 12, 2026"}
-                  category={"Books"}
-                  details={"14 items"}
-                  items={items}
-                ></DashboardItem>{" "}
-                <DashboardItem
-                  donorName={"Jane Doe"}
-                  date={"May 12, 2026"}
-                  category={"Toys"}
-                  details={"13 items"}
-                  items={items}
-                ></DashboardItem>{" "}
-                <DashboardItem
-                  donorName={"Jane Doe"}
-                  date={"May 12, 2026"}
-                  category={"Food"}
-                  details={"12 items"}
-                  items={items}
-                ></DashboardItem>
+                {RenderItemCards()}
               </Stack>
             </Stack>
           </div>

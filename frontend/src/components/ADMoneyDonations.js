@@ -4,8 +4,45 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import DashboardItem from "./DashboardItem";
 import { useState, useEffect } from "react";
+import { BASE_URL, authHeader } from "../context/api";
+import axios from "axios";
 
 function ADMonetaryDonations({ setActivePage }) {
+  const [monetaryData, setMonetaryData] = useState([]);
+
+  const GetMonetaryOverview = async () => {
+    try {
+      const res = await axios.get(
+        `${BASE_URL}/donations/monetary`,
+        authHeader(),
+      );
+      setMonetaryData(res.data);
+    } catch (error) {
+      console.log(error.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    GetMonetaryOverview();
+  }, []);
+
+  const RenderMonetaryCards = () => {
+    if (!monetaryData || monetaryData.length === 0) {
+      return <p>No Monetary Donations Yet</p>;
+    } else {
+      return Array.from({ length: monetaryData.length }, (_, i) => (
+        <>
+          <DashboardItem
+            donorName={monetaryData[i].donorName}
+            date={monetaryData[i].donationDate}
+            category={""}
+            details={monetaryData[i].amount}
+          ></DashboardItem>
+        </>
+      ));
+    }
+  };
+
   return (
     <Container fluid className="adminPageBackground">
       <Row className="mx-auto">
@@ -18,42 +55,7 @@ function ADMonetaryDonations({ setActivePage }) {
               <h5 style={{ textAlign: "center" }}>All Monetary Donations</h5>
 
               <Stack className="d-flex justify-content-center align-items-center">
-                <DashboardItem
-                  donorName={"Jane Doe"}
-                  date={"May 12, 2026"}
-                  category={""}
-                  details={"R300.00"}
-                ></DashboardItem>{" "}
-                <DashboardItem
-                  donorName={"Jane Doe"}
-                  date={"May 12, 2026"}
-                  category={""}
-                  details={"R300.00"}
-                ></DashboardItem>{" "}
-                <DashboardItem
-                  donorName={"Jane Doe"}
-                  date={"May 12, 2026"}
-                  category={""}
-                  details={"R300.00"}
-                ></DashboardItem>{" "}
-                <DashboardItem
-                  donorName={"Jane Doe"}
-                  date={"May 12, 2026"}
-                  category={""}
-                  details={"R300.00"}
-                ></DashboardItem>{" "}
-                <DashboardItem
-                  donorName={"Jane Doe"}
-                  date={"May 12, 2026"}
-                  category={""}
-                  details={"R300.00"}
-                ></DashboardItem>{" "}
-                <DashboardItem
-                  donorName={"Jane Doe"}
-                  date={"May 12, 2026"}
-                  category={""}
-                  details={"R300.00"}
-                ></DashboardItem>{" "}
+                {RenderMonetaryCards()}
               </Stack>
             </Stack>
           </div>

@@ -10,12 +10,13 @@ exports.getWishlist = async (req, res, next) => {
 
 exports.updateItem = async (req, res, next) => {
   try {
-    if (req.user.role !== "admin") {
+    if (req.user.role !== "a") {
       return res
         .status(403)
         .json({ error: "Access Denied: Only admins can access this feature" });
     }
-    const { entryID, itemName, quantity, category } = req.body;
+    const entryID = Number(req.params.id);
+    const { itemName, quantity, category } = req.body;
     if (!itemName || !quantity || !category)
       return res
         .status(400)
@@ -36,9 +37,12 @@ exports.updateItem = async (req, res, next) => {
 
 exports.deleteItem = async (req, res, next) => {
   try {
-    const { entryID } = req.body;
+    const entryID = Number(req.params.id);
+    if (!Number.isInteger(entryID)) {
+      return res.status(400).json({ error: "Invalid item id" });
+    }
     const deleted = await Wishlist.remove({ entryID });
-    if (!deleted) return res.status(404).json({ error: "User not found" });
+    if (!deleted) return res.status(404).json({ error: "Item not found" });
     res.status(204).end();
   } catch (err) {
     next(err);

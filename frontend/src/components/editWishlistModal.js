@@ -1,20 +1,60 @@
 import { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import Stack from "react-bootstrap/Stack";
-import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Text from "./textField";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
+import { BASE_URL, authHeader } from "../context/api";
+import axios from "axios";
 
-function EditWishlistModal({ open, setClosed, items }) {
+function EditWishlistModal({ open, setClosed, items, onEdit }) {
   const [show, setShow] = useState(false);
-  const [itemAmount, setItemAmount] = useState(1);
   const [selectedItems, setSelectedItems] = useState([
-    { name: "", quantity: "", category: "" },
+    { id: "", name: "", quantity: "", category: "" },
   ]);
+  const [deletedItems, setDeletedItems] = useState([]);
+
+  const EditWishlistItems = (item) =>
+    axios.put(
+      `${BASE_URL}/wishlist/${item.id}`,
+      {
+        itemName: item.name.trim(),
+        quantity: Number(item.quantity),
+        category: item.category,
+      },
+      authHeader(),
+    );
+
+  const DeleteItems = (item) =>
+    axios.delete(`${BASE_URL}/wishlist/${item.id}`, authHeader());
+
+  const handleSubmit = async () => {
+    const valid = selectedItems.filter(
+      (i) =>
+        i.name.trim() &&
+        Number.isInteger(Number(i.quantity)) &&
+        Number(i.quantity) >= 1 &&
+        i.category,
+    );
+
+    if (valid.length === 0 && deletedItems.length === 0) {
+      alert("Nothing to save.");
+      return;
+    }
+
+    try {
+      await Promise.all([
+        ...valid.map(EditWishlistItems),
+        ...deletedItems.map(DeleteItems),
+      ]);
+      setDeletedItems([]);
+      if (onEdit) await onEdit(); // wait for the re-fetch
+      handleClose();
+    } catch (error) {
+      console.log("save failed:", error.response?.data?.error || error.message);
+    }
+  };
 
   const handleClose = () => {
     setShow(false);
@@ -23,8 +63,6 @@ function EditWishlistModal({ open, setClosed, items }) {
     }
   };
 
-  const handleShow = () => setShow(true);
-
   useEffect(() => {
     setShow(open);
   }, [open]);
@@ -32,11 +70,13 @@ function EditWishlistModal({ open, setClosed, items }) {
   useEffect(() => {
     setSelectedItems(
       (items ?? []).map((item) => ({
+        id: item.entryID ?? "",
         name: item.itemName ?? "",
         quantity: item.quantity ?? "",
         category: item.category ?? "",
       })),
     );
+    setDeletedItems([]);
   }, [items]);
 
   const handleChange = (index, field, value) => {
@@ -45,13 +85,12 @@ function EditWishlistModal({ open, setClosed, items }) {
     );
   };
 
-  const handleItemSelect = (index, field, value) => {
-    setSelectedItems((prev) =>
-      prev.map((item, i) => (i === index ? { ...item, [field]: value } : item)),
-    );
-  };
-
   const removeSelectedItem = (index) => {
+    const itemToRemove = selectedItems[index];
+    if (itemToRemove.id) {
+      setDeletedItems((prev) => [...prev, itemToRemove]);
+    }
+
     setSelectedItems((prev) => prev.filter((_, i) => i !== index));
   };
 
@@ -120,7 +159,7 @@ function EditWishlistModal({ open, setClosed, items }) {
             <button className="adminLogout" onClick={handleClose}>
               Close
             </button>
-            <button className="adminLogout" onClick={handleClose}>
+            <button className="adminLogout" onClick={handleSubmit}>
               Save Changes
             </button>
           </div>

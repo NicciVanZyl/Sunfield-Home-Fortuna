@@ -31,7 +31,8 @@ exports.register = async (req, res, next) => {
       email,
       passwordHash,
     });
-    res.status(201).json({ token: signToken(user), user });
+    const { userPassword, ...safeUser } = user;
+    res.status(201).json({ token: signToken(user), user: safeUser });
   } catch (err) {
     next(err);
   }
@@ -48,7 +49,7 @@ exports.login = async (req, res, next) => {
     if (!user || !(await bcrypt.compare(password, user.userPassword))) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
-    const { PasswordHash, ...safeUser } = user;
+    const { userPassword, ...safeUser } = user;
     res.json({ token: signToken(user), user: safeUser });
   } catch (err) {
     next(err);

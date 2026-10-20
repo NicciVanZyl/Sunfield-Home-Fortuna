@@ -31,7 +31,11 @@ exports.createMonetaryDonation = async (req, res, next) => {
       return res.status(400).json({ error: "amount is required" });
     }
 
-    const donation = await Donation.createMonetaryDonation(req.user.id, amount);
+    const donation = await Donations.createMonetaryDonation({
+      donorId: req.user.id,
+      amount,
+    });
+    res.status(201).json(donation);
   } catch (err) {
     next(err);
   }
@@ -51,7 +55,14 @@ exports.createItemDonation = async (req, res, next) => {
       }
     }
 
-    const donation = await Donation.createItemDonation(req.user.id, items);
+    const mapped = items.map((it) => ({
+      itemName: it.itemName,
+      quantity: it.quantity,
+      category: it.category,
+      quality: it.quality,
+    }));
+
+    const donation = await Donations.createItemDonation(req.user.id, mapped);
     res.status(201).json(donation);
   } catch (err) {
     next(err);

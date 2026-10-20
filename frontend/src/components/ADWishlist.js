@@ -6,41 +6,44 @@ import WishlistItem from "./wishlistItem";
 import { useState, useEffect } from "react";
 import AddModal from "./addWishlistModal";
 import EditModal from "./editWishlistModal";
+import { BASE_URL, authHeader } from "../context/api";
+import axios from "axios";
 
 function ADWishlist({ setActivePage }) {
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
-  const [items, setItems] = useState([
-    {
-      itemName: "Milk",
-      quantity: "2",
-      quality: "Good",
-      category: "Food",
-      id: "1",
-      alreadyObtained: "1",
-    },
-    {
-      itemName: "Bread",
-      quantity: "2",
-      quality: "Good",
-      category: "Food",
-      id: "2",
-    },
-    {
-      itemName: "Coffee",
-      quantity: "2",
-      quality: "Good",
-      category: "Food",
-      id: "3",
-    },
-    {
-      itemName: "Sugar",
-      quantity: "2",
-      quality: "Good",
-      category: "Food",
-      id: "4",
-    },
-  ]);
+  const [items, setItems] = useState([]);
+
+  const GetWishlistItems = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/wishlist/items`, authHeader());
+
+      console.log("fetched", res.data);
+
+      setItems(res.data);
+    } catch (error) {
+      console.log(error.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    GetWishlistItems();
+  }, []);
+
+  const RenderWishlistItem = () => {
+    if (!items || items.length === 0) {
+      return <p>No Wishlist Items Added Yet</p>;
+    }
+    return items.map((item) => (
+      <WishlistItem
+        key={item.entryID}
+        itemName={item.itemName}
+        quantity={item.quantity}
+        category={item.category}
+        fillAmount={`${Math.min(100, (item.donatedQuantity / item.quantity) * 100)}%`}
+      />
+    ));
+  };
 
   return (
     <>
@@ -50,6 +53,7 @@ function ADWishlist({ setActivePage }) {
           setOpenAddModal(false);
         }}
         items={items}
+        onAdded={GetWishlistItems}
       ></AddModal>
       <EditModal
         open={openEditModal}
@@ -57,6 +61,7 @@ function ADWishlist({ setActivePage }) {
           setOpenEditModal(false);
         }}
         items={items}
+        onEdit={GetWishlistItems}
       ></EditModal>
 
       <Container fluid className="adminPageBackground">
@@ -86,42 +91,7 @@ function ADWishlist({ setActivePage }) {
                       <h5 style={{ textAlign: "center" }}>Progress</h5>
                     </Col>
                   </Row>
-                  <WishlistItem
-                    itemName={"Milk"}
-                    quantity={"12"}
-                    category={"Food"}
-                    fillAmount={"20%"}
-                  ></WishlistItem>{" "}
-                  <WishlistItem
-                    itemName={"Milk"}
-                    quantity={"12"}
-                    category={"Food"}
-                    fillAmount={"40%"}
-                  ></WishlistItem>{" "}
-                  <WishlistItem
-                    itemName={"Milk"}
-                    quantity={"12"}
-                    category={"Food"}
-                    fillAmount={"10%"}
-                  ></WishlistItem>{" "}
-                  <WishlistItem
-                    itemName={"Milk"}
-                    quantity={"12"}
-                    category={"Food"}
-                    fillAmount={"80%"}
-                  ></WishlistItem>{" "}
-                  <WishlistItem
-                    itemName={"Milk"}
-                    quantity={"12"}
-                    category={"Food"}
-                    fillAmount={"94%"}
-                  ></WishlistItem>{" "}
-                  <WishlistItem
-                    itemName={"Milk"}
-                    quantity={"12"}
-                    category={"Food"}
-                    fillAmount={"62%"}
-                  ></WishlistItem>{" "}
+                  {RenderWishlistItem()}
                 </Stack>
                 <div className="d-flex gap-3">
                   <button

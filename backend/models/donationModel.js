@@ -5,19 +5,25 @@ const itemColumns = "itemDonationID, totalItems, donationDate, donor";
 
 const getAllMonetary = async () => {
   const pool = await getPool();
-  const result = await pool
-    .request()
-    .query(
-      `SELECT ${monetaryColumns} FROM monetaryDonations ORDER BY donationDate`,
-    );
+  const result = await pool.request().query(
+    ` SELECT d.monetaryDonationID, d.amount, d.donationDate, d.donor,
+        u.firstName + ' ' + u.lastName AS donorName
+  FROM monetaryDonations d
+  LEFT JOIN users u ON u.userID = d.donor
+  ORDER BY d.donationDate DESC`,
+  );
   return result.recordset;
 };
 
 const getAllItem = async () => {
   const pool = await getPool();
-  const result = await pool
-    .request()
-    .query(`SELECT ${itemColumns} FROM itemDonations  ORDER BY donationDate`);
+  const result = await pool.request().query(`
+  SELECT d.itemDonationID, d.totalItems, d.donationDate, d.donor,
+        u.firstName + ' ' + u.lastName AS donorName
+  FROM itemDonations d
+  LEFT JOIN users u ON u.userID = d.donor
+  ORDER BY d.donationDate DESC
+`);
   return result.recordset;
 };
 
@@ -25,10 +31,11 @@ const getAllItemWithItems = async () => {
   const pool = await getPool();
   const result = await pool.request().query(`
     SELECT d.itemDonationID, d.totalItems, d.donationDate, d.donor,
-           i.itemID, i.itemName, i.quantity, i.category, i.quality
+           i.itemID, i.itemName, i.quantity, i.category, i.quality,u.firstName + ' ' + u.lastName AS donorName
     FROM itemDonations d
     LEFT JOIN itemDonationLinks l ON l.donationID = d.itemDonationID
     LEFT JOIN items i ON i.itemID = l.itemID
+      LEFT JOIN users u ON u.userID = d.donor
     ORDER BY d.donationDate`);
 
   const donations = {};
@@ -39,6 +46,7 @@ const getAllItemWithItems = async () => {
         totalItems: row.totalItems,
         donationDate: row.donationDate,
         donor: row.donor,
+        donorName: row.donorName,
         items: [],
       };
     }
@@ -108,7 +116,6 @@ const createMonetaryDonation = async ({ donorId, amount }) => {
     .query(`INSERT INTO monetaryDonations (amount, donationDate, donor)
               OUTPUT INSERTED.monetaryDonationID
               VALUES (@amount, GETDATE(), @donor)`);
-  const donationId = donationResult.recordset[0].monetaryDonationID;
   return result.recordset[0];
 };
 

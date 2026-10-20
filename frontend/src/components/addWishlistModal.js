@@ -1,21 +1,53 @@
 import { useState, useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
-import Arrow from "../assets/images/Arrow.svg";
-import Stack from "react-bootstrap/Stack";
-import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Text from "./textField";
 import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
 import InputGroup from "react-bootstrap/InputGroup";
+import { BASE_URL, authHeader } from "../context/api";
+import axios from "axios";
 
-function ItemDonation({ open, setClosed }) {
+function ItemDonation({ open, setClosed, onAdded }) {
   const [isRecurring, setIsRecurring] = useState(true);
   const [itemAmount, setItemAmount] = useState(1);
   const [selectedItems, setSelectedItems] = useState([
     { name: "", category: "", quantity: "" },
   ]);
+
+  const AddWishlistItem = (item) =>
+    axios.post(
+      `${BASE_URL}/wishlist/addItem`,
+      {
+        itemName: item.name.trim(),
+        quantity: Number(item.quantity),
+        category: item.category,
+      },
+      authHeader(),
+    );
+
+  const handleSubmit = async () => {
+    const valid = selectedItems.filter(
+      (i) =>
+        i.name.trim() &&
+        Number.isInteger(Number(i.quantity)) &&
+        Number(i.quantity) >= 1 &&
+        i.category,
+    );
+
+    if (valid.length === 0) {
+      alert("Please fill in at least one item completely.");
+      return;
+    }
+
+    try {
+      await Promise.all(valid.map(AddWishlistItem)); 
+      if (onAdded) await onAdded(); 
+      handleClose();
+    } catch (error) {
+      console.log("add failed:", error.response?.data?.error || error.message);
+    }
+  };
+
   const [show, setShow] = useState(false);
   const handleClose = () => {
     setShow(false);
@@ -184,7 +216,7 @@ function ItemDonation({ open, setClosed }) {
             </Row>
             {renderSummaryItems()}
           </div>
-          <button className="formButton my-4" onClick={() => handleClose()}>
+          <button className="formButton my-4" onClick={handleSubmit}>
             Add Items
           </button>
         </Modal.Body>

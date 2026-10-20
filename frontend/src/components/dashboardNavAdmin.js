@@ -23,6 +23,9 @@ import ItemDonations from "./ADItemDonations";
 import Wishlist from "./ADWishlist";
 import Logo from "../assets/images/Logo.svg";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useAuth } from "../context/authContext";
+import { useNavigate } from "react-router-dom";
+import SuccessModal from "../components/successModal";
 
 const theme = createTheme({
   components: {
@@ -240,6 +243,11 @@ const navItems = [
 ];
 
 function DashboardNav() {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+  const [showModal, setShowModal] = React.useState(false);
+  const [message, setMessage] = React.useState("");
+  const [title, setTitle] = React.useState("");
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
   const [activePage, setActivePage] = React.useState("Overview");
@@ -287,13 +295,34 @@ function DashboardNav() {
         ))}
       </List>
       <div className="mb-4">
-        <button className="adminLogout">Log Out</button>
+        <button
+          className="adminLogout"
+          onClick={() => {
+            logout();
+            setMessage(
+              "You've been logged out successfully. You will be redirected to the Login Page shortly ",
+            );
+            setTitle("Logged Out Successfully");
+            setShowModal(true);
+          }}
+        >
+          Log Out
+        </button>
       </div>
     </div>
   );
-
+  const handleModalClose = () => {
+    setShowModal(false);
+    navigate("/");
+  };
   return (
     <ThemeProvider theme={theme}>
+      <SuccessModal
+        show={showModal}
+        onClose={handleModalClose}
+        title={title}
+        message={message}
+      ></SuccessModal>
       <Box sx={{ display: "flex", height: "100%", overflow: "hidden" }}>
         <CssBaseline />
 

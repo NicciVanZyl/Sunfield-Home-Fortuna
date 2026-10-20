@@ -1180,3 +1180,49 @@ button.outline {
   transform: scale(1.05);
   font-weight: 500;
 }
+
+@media only screen and (max-width: 600px) {
+  .navbarRight {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+  }
+  .navbarLeft {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@media only screen and (min-width: 600px) {
+  .navbarRight {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+  }
+  .navbarLeft {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .navbarRight {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+  }
+  .navbarLeft {
+    display: flex;
+    flex-direction: column;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .navbarRight {
+    display: flex;
+    flex-direction: row;
+  }
+  .navbarLeft {
+    display: flex;
+    flex-direction: row;
+  }
+}
