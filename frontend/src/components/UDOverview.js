@@ -6,19 +6,136 @@ import DashboardItem from "./DashboardItem";
 import DonationType from "./donationModal";
 import ItemDonation from "./donationItem";
 import MoneyDonation from "./paymentModal";
-import { useEffect, useState } from "react";
-import Arrow from "../assets/images/Arrow.svg";
+import ErrorModal from "./errorModal";
+import SuccessModal from "./successModal";
+import { useEffect, useState, useMemo } from "react";
+import { BASE_URL, authHeader } from "../context/api";
+import axios from "axios";
+import { useAuth } from "../context/authContext";
+import { format } from "date-fns";
 
 function UDOverview({ setActivePage }) {
+  const { user } = useAuth();
   const [donateOpen, setDonateOpen] = useState(false);
   const [paymentOpen, setPaymentOpen] = useState(false);
   const [itemOpen, setItemOpen] = useState(false);
   const [donationType, setDonationType] = useState("");
+  const [donationData, setDonationData] = useState([]);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const [items, money] = await Promise.all([
+          axios.get(`${BASE_URL}/donations/items/${user.userID}`, authHeader()),
+          axios.get(
+            `${BASE_URL}/donations/monetary/${user.userID}`,
+            authHeader(),
+          ),
+        ]);
+        setDonationData([...items.data, ...money.data]); // spread both arrays into one flat list
+      } catch (error) {
+        console.log(error.response?.data?.error);
+      }
+    };
+    load();
+  }, []);
+
+  const sortedData = useMemo(
+    () =>
+      [...donationData].sort(
+        (a, b) => new Date(b.donationDate) - new Date(a.donationDate),
+      ),
+    [donationData],
+  );
+
+  const RenderDonationCards = () => {
+    if (!donationData || donationData.length === 0) {
+      return <p>No Items Donated Yet</p>;
+    } else {
+      console.log(sortedData);
+
+      return sortedData
+        .slice(0, 4)
+        .map((d) => (
+          <DashboardItem
+            key={
+              d.itemDonationID
+                ? `item-${d.itemDonationID}`
+                : `money-${d.monetaryDonationID}`
+            }
+            donorName={d.donorName}
+            date={format(new Date(d.donationDate), "yyyy-MM-dd HH:mm")}
+            category={d.itemDonationID ? `Item Donation` : `Monetary Donation`}
+            details={d.totalItems ?? d.amount}
+          />
+        ));
+    }
+  };
+  const RenderOverviewCards = () => {
+    if (!donationData || donationData.length === 0) {
+      return (
+        <>
+          <Col className="mb-3">
+            <div className="homeCards h-100">
+              <h5 style={{ textAlign: "center" }}>You've given</h5>
+              <h4 style={{ textAlign: "center" }}>R0</h4>
+            </div>
+          </Col>
+          <Col className="mb-3">
+            <div className="homeCards h-100">
+              <h5 style={{ textAlign: "center" }}>Items Donated</h5>
+              <h4 style={{ textAlign: "center" }}>0</h4>
+            </div>
+          </Col>
+          <Col className="mb-3">
+            <div className="homeCards h-100">
+              <h5 style={{ textAlign: "center" }}>Donor Since</h5>
+              <h4 style={{ textAlign: "center" }}>
+                {format(new Date(user.createdAt), "MMM yyyy")}
+              </h4>
+            </div>
+          </Col>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <Col className="mb-3">
+            <div className="homeCards h-100">
+              <h5 style={{ textAlign: "center" }}>You've given</h5>
+              <h4 style={{ textAlign: "center" }}>
+                R{donationData.reduce((sum, d) => sum + (d.amount ?? 0), 0)}
+              </h4>
+            </div>
+          </Col>
+          <Col className="mb-3">
+            <div className="homeCards h-100">
+              <h5 style={{ textAlign: "center" }}>Items Donated</h5>
+              <h4 style={{ textAlign: "center" }}>
+                {donationData.reduce((sum, d) => sum + (d.totalItems ?? 0), 0)}
+              </h4>
+            </div>
+          </Col>
+          <Col className="mb-3">
+            <div className="homeCards h-100">
+              <h5 style={{ textAlign: "center" }}>Donor Since</h5>
+              <h4 style={{ textAlign: "center" }}>
+                {format(new Date(user.createdAt), "MMM yyyy")}
+              </h4>
+            </div>
+          </Col>
+        </>
+      );
+    }
+  };
 
   const openModals = () => {
     if (donationType == "Money") {
       setPaymentOpen(true);
-    } else if(donationType == "Item") {
+    } else if (donationType == "Item") {
       setItemOpen(true);
     }
   };
@@ -36,6 +153,20 @@ function UDOverview({ setActivePage }) {
       setItemOpen(true);
     }
   };
+
+  const handleSuccess = () => {
+    setShowSuccess(true);
+  };
+  const handleError = (errorMessage) => {
+    setMessage(errorMessage);
+    setShowError(true);
+  };
+
+  const handleModalClose = () => {
+    setShowError(false);
+    setShowSuccess(false);
+    window.location.reload();
+  };
   return (
     <>
       <DonationType
@@ -43,22 +174,36 @@ function UDOverview({ setActivePage }) {
         setClosed={() => setDonateOpen(false)}
         chosenType={handleDonationType}
       ></DonationType>
-
+      <ErrorModal
+        show={showError}
+        onClose={handleModalClose}
+        message={message}
+      ></ErrorModal>
+      <SuccessModal
+        show={showSuccess}
+        onClose={handleModalClose}
+        title={"Donation Complete!"}
+        message={"Thank you for your donation! Your support is appreciated"}
+      ></SuccessModal>
       <MoneyDonation
         open={paymentOpen}
         setClosed={() => setPaymentOpen(false)}
+        onAdded={handleSuccess}
+        onError={(errorMessage) => handleError(errorMessage)}
       ></MoneyDonation>
 
       <ItemDonation
         open={itemOpen}
         setClosed={() => setItemOpen(false)}
+        onAdded={handleSuccess}
+        onError={(errorMessage) => handleError(errorMessage)}
       ></ItemDonation>
 
       <Container fluid className="adminPageBackground">
         <Row className="mx-auto d-flex flex-row">
           <Col>
             <h3>Welcome Back</h3>
-            <h5>Here’s the difference you’ve made</h5>
+            <h4>Here’s the difference you’ve made</h4>
           </Col>
           <Col sm={3}>
             <button className="adminLogout" onClick={() => setDonateOpen(true)}>
@@ -67,24 +212,7 @@ function UDOverview({ setActivePage }) {
           </Col>
         </Row>
         <Row className="mx-auto d-flex flex-row my-5">
-          <Col className="mb-3">
-            <div className="homeCards h-100">
-              <h5 style={{ textAlign: "center" }}>You've given</h5>
-              <h3 style={{ textAlign: "center" }}>R2400,00</h3>
-            </div>
-          </Col>
-          <Col className="mb-3">
-            <div className="homeCards h-100">
-              <h5 style={{ textAlign: "center" }}>Items Donated</h5>
-              <h3 style={{ textAlign: "center" }}>32</h3>
-            </div>
-          </Col>
-          <Col className="mb-3">
-            <div className="homeCards h-100">
-              <h5 style={{ textAlign: "center" }}>Donor Since</h5>
-              <h3 style={{ textAlign: "center" }}>Mar 2026</h3>
-            </div>
-          </Col>
+          {RenderOverviewCards()}
         </Row>
         <Row className="my-5">
           <Col sx={12} className="mb-5">
@@ -93,30 +221,7 @@ function UDOverview({ setActivePage }) {
                 <h4>Your Recent Donations</h4>
 
                 <Stack className="d-flex justify-content-center align-items-center">
-                  <DashboardItem
-                    donorName={"Jane Doe"}
-                    date={"May 12, 2026"}
-                    category={"Clothing"}
-                    details={"16 items"}
-                  ></DashboardItem>{" "}
-                  <DashboardItem
-                    donorName={"Jane Doe"}
-                    date={"May 12, 2026"}
-                    category={""}
-                    details={"R300.00"}
-                  ></DashboardItem>{" "}
-                  <DashboardItem
-                    donorName={"Jane Doe"}
-                    date={"May 12, 2026"}
-                    category={"Toys"}
-                    details={"13 items"}
-                  ></DashboardItem>{" "}
-                  <DashboardItem
-                    donorName={"Jane Doe"}
-                    date={"May 12, 2026"}
-                    category={""}
-                    details={"R300.00"}
-                  ></DashboardItem>
+                  {RenderDonationCards()}
                 </Stack>
                 <button
                   className="adminLogout"

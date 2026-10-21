@@ -34,6 +34,18 @@ exports.updateItem = async (req, res, next) => {
     next(err);
   }
 };
+exports.CompleteEntry = async (req, res, next) => {
+  try {
+    const entryID = Number(req.params.id);
+    const updated = await Wishlist.CompleteItem({
+      entryID,
+    });
+    if (!updated) return res.status(404).json({ error: "Item Not Found" });
+    res.json(updated);
+  } catch (err) {
+    next(err);
+  }
+};
 
 exports.deleteItem = async (req, res, next) => {
   try {

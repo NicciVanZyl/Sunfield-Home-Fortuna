@@ -30,12 +30,14 @@ function ADItemDonations({ setActivePage }) {
     if (!items || items.length === 0) {
       return <p>No Items Donated Yet</p>;
     } else {
+      console.log(items);
+      
       return Array.from({ length: items.length }, (_, i) => (
         <>
           <DashboardItem
             donorName={items[i].donorName}
             date={items[i].donationDate}
-            category={""}
+            category={"Item Donation"}
             details={items[i].totalItems}
             items={items[i].items}
           ></DashboardItem>

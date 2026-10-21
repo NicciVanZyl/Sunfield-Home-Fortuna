@@ -1,6 +1,7 @@
 const { sql, getPool } = require("../config/db");
 
-const wishlistColumns = "w.entryID, w.itemName, w.quantity, w.category";
+const wishlistColumns =
+  "w.entryID, w.itemName, w.quantity, w.category,w.isComplete";
 
 const getAll = async () => {
   const pool = await getPool();
@@ -50,6 +51,15 @@ const update = async ({ entryID, itemName, quantity, category }) => {
   return result.recordset[0];
 };
 
+const CompleteItem = async ({ entryID }) => {
+  const pool = await getPool();
+  const result = await pool.request().input("entryID", sql.Int, entryID)
+    .query(`UPDATE wishlist SET isComplete = 1
+      OUTPUT INSERTED.*
+            WHERE entryID = @entryID`);
+  return result.recordset[0];
+};
+
 const remove = async ({ entryID }) => {
   const pool = await getPool();
   const result = await pool
@@ -64,4 +74,5 @@ module.exports = {
   getAll,
   update,
   remove,
+  CompleteItem,
 };

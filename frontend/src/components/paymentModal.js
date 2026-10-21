@@ -1,15 +1,10 @@
 import { useState, useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
-import Arrow from "../assets/images/Arrow.svg";
-import Stack from "react-bootstrap/Stack";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Text from "./textField";
 import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import InputGroup from "react-bootstrap/InputGroup";
-function ItemDonation({ open, setClosed }) {
+import { BASE_URL, authHeader } from "../context/api";
+import axios from "axios";
+
+function ItemDonation({ open, setClosed, onAdded, onError }) {
   const [isRecurring, setIsRecurring] = useState(true);
   const [paymentAmount, setPaymentAmount] = useState("");
   const [cardName, setCardName] = useState("");
@@ -27,6 +22,31 @@ function ItemDonation({ open, setClosed }) {
     setPaymentAmount("");
     if (setClosed) {
       setClosed(false);
+    }
+  };
+
+  const AddMoneyDonation = (amount) => {
+    axios.post(
+      `${BASE_URL}/donations/monetary`,
+      {
+        amount: amount,
+      },
+      authHeader(),
+    );
+  };
+
+  const handleSubmit = async () => {
+    try {
+      await AddMoneyDonation(paymentAmount);
+      if (onAdded) await onAdded();
+      handleClose();
+    } catch (error) {
+      console.log(
+        "Donation Failed:",
+        error.response?.data?.error || error.message,
+      );
+      if (onError)
+        await onError("Donation Failed:", error.response?.data?.error);
     }
   };
 
@@ -192,7 +212,7 @@ function ItemDonation({ open, setClosed }) {
               </Form.Control.Feedback>
             </Form.Group>
           </div>
-          <button className="formButton my-4" onClick={() => handleClose()}>
+          <button className="formButton my-4" onClick={handleSubmit}>
             Pay
           </button>
         </Modal.Body>

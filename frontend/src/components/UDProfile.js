@@ -12,6 +12,8 @@ import { Eye, EyeSlash } from "react-bootstrap-icons";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import InputGroup from "react-bootstrap/InputGroup";
+import { BASE_URL, authHeader } from "../context/api";
+import axios from "axios";
 
 const EMPTY_FORM = {
   firstName: "",

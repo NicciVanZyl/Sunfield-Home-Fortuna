@@ -6,6 +6,7 @@ import DashboardItem from "./DashboardItem";
 import { useState, useEffect } from "react";
 import { BASE_URL, authHeader } from "../context/api";
 import axios from "axios";
+import { format } from "date-fns";
 
 function ADMonetaryDonations({ setActivePage }) {
   const [monetaryData, setMonetaryData] = useState([]);
@@ -34,8 +35,11 @@ function ADMonetaryDonations({ setActivePage }) {
         <>
           <DashboardItem
             donorName={monetaryData[i].donorName}
-            date={monetaryData[i].donationDate}
-            category={""}
+            date={format(
+              new Date(monetaryData[i].donationDate),
+              "yyyy-MM-dd HH:mm",
+            )}
+            category={"Monetary Donation"}
             details={monetaryData[i].amount}
           ></DashboardItem>
         </>

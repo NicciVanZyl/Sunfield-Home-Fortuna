@@ -50,7 +50,7 @@ function Login() {
       setErrorMessage("");
       setShowModal(true);
     } catch (error) {
-      setErrorMessage(error);
+      setErrorMessage(error.response?.data?.error);
     }
   };
   const Register = async ({ firstName, lastName, email, password }) => {

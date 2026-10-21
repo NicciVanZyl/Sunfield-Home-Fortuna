@@ -6,6 +6,7 @@ import DashboardItem from "./DashboardItem";
 import { BASE_URL, authHeader } from "../context/api";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { format } from "date-fns";
 
 function ADOverview({ setActivePage }) {
   const [itemData, setItemData] = useState([]);
@@ -41,13 +42,13 @@ function ADOverview({ setActivePage }) {
     if (!itemData || itemData.length === 0) {
       return <p>No Items Donated Yet</p>;
     } else {
-      return Array.from({ length: itemData.length }, (_, i) => (
+      return itemData.slice(0, 4).map((d) => (
         <>
           <DashboardItem
-            donorName={itemData[i].donorName}
-            date={itemData[i].donationDate}
-            category={""}
-            details={itemData[i].totalItems}
+            donorName={d.donorName}
+            date={format(new Date(d.donationDate),"yyyy-MM-dd HH:mm")}
+            category={"Item Donation"}
+            details={d.totalItems}
           ></DashboardItem>
         </>
       ));
@@ -57,13 +58,13 @@ function ADOverview({ setActivePage }) {
     if (!monetaryData || monetaryData.length === 0) {
       return <p>No Monetary Donations Yet</p>;
     } else {
-      return Array.from({ length: monetaryData.length }, (_, i) => (
+      return monetaryData.slice(0, 4).map((d) => (
         <>
           <DashboardItem
-            donorName={monetaryData[i].donorName}
-            date={monetaryData[i].donationDate}
-            category={""}
-            details={monetaryData[i].amount}
+            donorName={d.donorName}
+            date={format(new Date(d.donationDate),"yyyy-MM-dd HH:mm")}
+            category={"Monetary Donation"}
+            details={d.amount}
           ></DashboardItem>
         </>
       ));

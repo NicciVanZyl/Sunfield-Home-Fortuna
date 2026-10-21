@@ -8,7 +8,7 @@ function SuccessModal({ show, message, title, onClose }) {
     if (show) {
       const timer = setTimeout(() => {
         onClose();
-      }, 3500);
+      }, 2000);
       return () => clearTimeout(timer);
     }
   }, [show, onClose]);

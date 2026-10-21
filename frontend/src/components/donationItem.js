@@ -1,21 +1,19 @@
 import { useState, useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
-import Arrow from "../assets/images/Arrow.svg";
-import Stack from "react-bootstrap/Stack";
-import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Text from "./textField";
 import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
 import InputGroup from "react-bootstrap/InputGroup";
+import { BASE_URL, authHeader } from "../context/api";
+import axios from "axios";
 
-function ItemDonation({ open, setClosed }) {
+function ItemDonation({ open, setClosed, onAdded, onError }) {
   const [isRecurring, setIsRecurring] = useState(true);
   const [itemAmount, setItemAmount] = useState(1);
   const [selectedItems, setSelectedItems] = useState([
-    { name: "", quality: "", quantity: "" },
+    { name: "", quantity: "", category: "", quality: "" },
   ]);
+  const [wishlist, setWishlist] = useState([]);
   const [pickupDate, setPickupDate] = useState("");
   const [pickupTime, setPickupTime] = useState("");
   const [show, setShow] = useState(false);
@@ -24,10 +22,31 @@ function ItemDonation({ open, setClosed }) {
     .toISOString()
     .split("T")[0];
 
+  const AddItemDonation = (items, date, time) =>
+    axios.post(
+      `${BASE_URL}/donations/items`,
+      {
+        items: items,
+        dropoffDate: date,
+        dropoffTime: time,
+      },
+      authHeader(),
+    );
+
+  const GetWishlistItems = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/wishlist/items`, authHeader());
+      setWishlist(res.data);
+    } catch (error) {
+      console.log(error.response?.data?.error);
+    }
+  };
+
   const handleClose = () => {
     setShow(false);
     setItemAmount(0);
     setSelectedItems([]);
+    setWishlist([]);
     if (setClosed) setClosed(false);
   };
 
@@ -35,6 +54,7 @@ function ItemDonation({ open, setClosed }) {
 
   useEffect(() => {
     setShow(open);
+    if (open) GetWishlistItems();
   }, [open]);
 
   const handleDropOffChange = (e) => {
@@ -50,7 +70,9 @@ function ItemDonation({ open, setClosed }) {
 
   const handleChange = (e) => {
     const value = parseInt(e.target.value, 10);
-    const amount = Number.isNaN(value) ? 0 : Math.max(0, Math.min(value, 20));
+    const amount = Number.isNaN(value)
+      ? 0
+      : Math.max(0, Math.min(value, available.length));
 
     setItemAmount(amount);
     setSelectedItems((prev) =>
@@ -63,27 +85,98 @@ function ItemDonation({ open, setClosed }) {
 
   const handleItemSelect = (index, field, value) => {
     setSelectedItems((prev) =>
-      prev.map((item, i) => (i === index ? { ...item, [field]: value } : item)),
+      prev.map((item, i) => {
+        if (i !== index) return item;
+
+        const updated = { ...item, [field]: value };
+
+        if (field === "name") {
+          const match = wishlist.find((w) => w.itemName === value);
+          updated.category = match?.category ?? "";
+          updated.quantity = ""; // new item means a new cap, so clear the old quantity
+        }
+
+        return updated;
+      }),
     );
   };
 
+  const handleSubmit = async () => {
+    const valid = selectedItems.filter(
+      (i) => i.name && i.quality && Number(i.quantity) >= 1,
+    );
+
+    if (valid.length === 0) {
+      alert("Please fill in at least one item completely.");
+      return;
+    }
+
+    const items = valid.map((i) => ({
+      itemName: i.name,
+      quantity: Number(i.quantity),
+      quality: i.quality,
+      category: i.category,
+    }));
+
+    try {
+      console.log(items, pickupDate, pickupTime);
+      await AddItemDonation(items, pickupDate, pickupTime);
+      if (onAdded) await onAdded();
+      handleClose();
+    } catch (error) {
+      console.log("add failed:", error.response?.data?.error || error.message);
+      if (onError)
+        await onError("Donation failed:", error.response?.data?.error);
+    }
+  };
+
+  const getMax = (itemName) =>
+    wishlist.find((w) => w.itemName === itemName)?.stillNeeded ?? 0;
+
+  const handleNameSelect = (index, name) => {
+    const match = wishlist.find((w) => w.itemName === name);
+    setSelectedItems((prev) =>
+      prev.map((item, i) =>
+        i === index
+          ? { ...item, name, category: match?.category ?? "", quantity: "" }
+          : item,
+      ),
+    );
+  };
+
+  const handleQuantityChange = (index, raw, max) => {
+    const value =
+      raw === "" ? "" : Math.min(Math.max(parseInt(raw, 10) || 1, 1), max);
+    handleItemSelect(index, "quantity", value);
+  };
+
+  const available = wishlist.filter((w) => w.stillNeeded > 0);
   const renderItems = () => {
+    const optionsFor = (i) =>
+      available.filter(
+        (w) =>
+          w.itemName === selectedItems[i]?.name ||
+          !selectedItems.some((s, j) => j !== i && s.name === w.itemName),
+      );
     return Array.from({ length: itemAmount }, (_, i) => (
       <div className="paymentCards" style={{ marginBottom: "1rem" }} key={i}>
+        {available.length === 0 && (
+          <p>Everything on the wishlist has been donated. Thank you!</p>
+        )}
         <Form.Group className="input-field" controlId={`item-${i}`}>
           <Form.Label>Item </Form.Label>
           <InputGroup hasValidation>
             <Form.Select
-              aria-label={`Item Name ${i + 1}`}
               value={selectedItems[i]?.name ?? ""}
               onChange={(e) => handleItemSelect(i, "name", e.target.value)}
               className="donateInputs"
             >
               <option value="">Select An Item</option>
-              <option value="Milk">Milk</option>
-              <option value="Bread">Bread</option>
-              <option value="Dictionaries">Dictionaries</option>
-              <option value="Sugar">Sugar</option>
+              {optionsFor(i).map((w) => (
+                <option key={w.itemName} value={w.itemName}>
+                  {w.itemName} ({w.stillNeeded} needed)
+                </option>
+              ))}
             </Form.Select>
             <Form.Control.Feedback type="invalid">
               Please select an item.
@@ -114,18 +207,26 @@ function ItemDonation({ open, setClosed }) {
         <Form.Group className="input-field" controlId={`item-${i}`}>
           <Form.Label>Quantity</Form.Label>
           <InputGroup hasValidation>
-            <Form.Select
-              aria-label={`Item ${i + 1}`}
+            <Form.Control
+              type="number"
+              min={1}
+              max={getMax(selectedItems[i]?.name)}
+              disabled={!selectedItems[i]?.name}
               value={selectedItems[i]?.quantity ?? ""}
-              onChange={(e) => handleItemSelect(i, "quantity", e.target.value)}
-              className="donateInputs"
-            >
-              <option value="">Select the amount you want to donate</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-            </Form.Select>
+              placeholder={
+                selectedItems[i]?.name
+                  ? `Up to ${getMax(selectedItems[i].name)}`
+                  : "Select an item first"
+              }
+              onChange={(e) =>
+                handleQuantityChange(
+                  i,
+                  e.target.value,
+                  getMax(selectedItems[i]?.name),
+                )
+              }
+              className="donateTextInputs"
+            />
             <Form.Control.Feedback type="invalid">
               Please select an item.
             </Form.Control.Feedback>
@@ -201,6 +302,7 @@ function ItemDonation({ open, setClosed }) {
             <div className="donationNumbers">2</div>
             <h4 style={{ marginBottom: "0" }}>Item Details</h4>
           </div>
+
           {renderItems()}
           <div className="d-flex flex-row align-items-center gap-3 mt-5">
             <div className="donationNumbers">3</div>
@@ -261,7 +363,7 @@ function ItemDonation({ open, setClosed }) {
               website.
             </Form.Label>
           </div>
-          <button className="formButton my-4" onClick={() => handleClose()}>
+          <button className="formButton my-4" onClick={handleSubmit}>
             Make Donation
           </button>
         </Modal.Body>

@@ -3,31 +3,68 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import DashboardItem from "./dashboardItemDetailed";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { BASE_URL, authHeader } from "../context/api";
+import axios from "axios";
+import { useAuth } from "../context/authContext";
 
 function UDDonations({ setActivePage }) {
-  const [items, setItems] = useState([
-    {
-      itemName: "Milk",
-      quantity: "2",
-      quality: "Good",
-    },
-    {
-      itemName: "Milk",
-      quantity: "2",
-      quality: "Good",
-    },
-    {
-      itemName: "Milk",
-      quantity: "2",
-      quality: "Good",
-    },
-    {
-      itemName: "Milk",
-      quantity: "2",
-      quality: "Good",
-    },
-  ]);
+  const { user } = useAuth();
+  const [donationData, setDonationData] = useState([]);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const [items, money] = await Promise.all([
+          axios.get(
+            `${BASE_URL}/donations/itemDetails/${user.userID}`,
+            authHeader(),
+          ),
+          axios.get(
+            `${BASE_URL}/donations/monetary/${user.userID}`,
+            authHeader(),
+          ),
+        ]);
+        setDonationData([...items.data, ...money.data]); // spread both arrays into one flat list
+      } catch (error) {
+        console.log(error.response?.data?.error);
+      }
+    };
+    load();
+  }, []);
+
+  const sortedData = useMemo(
+    () =>
+      [...donationData].sort(
+        (a, b) => new Date(b.donationDate) - new Date(a.donationDate),
+      ),
+    [donationData],
+  );
+
+  const RenderDonationCards = () => {
+    if (!donationData || donationData.length === 0) {
+      return <p>No Donations Yet</p>;
+    } else {
+      return Array.from({ length: sortedData.length }, (_, i) => (
+        <DashboardItem
+          key={
+            sortedData[i].itemDonationID
+              ? `item-${sortedData[i].itemDonationID}`
+              : `money-${sortedData[i].monetaryDonationID}`
+          }
+          donorName={sortedData[i].donorName}
+          date={sortedData[i].donationDate}
+          category={
+            sortedData[i].itemDonationID
+              ? "Item Donation"
+              : "Monetary Donation"
+          }
+          details={sortedData[i].totalItems ?? sortedData[i].amount}
+          items={sortedData[i].items ?? []}
+        />
+      ));
+    }
+  };
 
   return (
     <Container fluid className="adminPageBackground">
@@ -39,48 +76,7 @@ function UDDonations({ setActivePage }) {
           <div className="homeCards mb-5">
             <Stack>
               <Stack className="d-flex justify-content-center align-items-center">
-                <DashboardItem
-                  donorName={"Jane Doe"}
-                  date={"May 12, 2026"}
-                  category={"Monetary Donation"}
-                  details={"R300.00"}
-                  items={[]}
-                ></DashboardItem>{" "}
-                <DashboardItem
-                  donorName={"Jane Doe"}
-                  date={"May 12, 2026"}
-                  category={"Monetary Donation"}
-                  details={"R300.00"}
-                  items={[]}
-                ></DashboardItem>{" "}
-                <DashboardItem
-                  donorName={"Jane Doe"}
-                  date={"May 12, 2026"}
-                  category={"Food"}
-                  details={"14 Items"}
-                  items={items}
-                ></DashboardItem>{" "}
-                <DashboardItem
-                  donorName={"Jane Doe"}
-                  date={"May 12, 2026"}
-                  category={"Food"}
-                  details={"14 Items"}
-                  items={items}
-                ></DashboardItem>{" "}
-                <DashboardItem
-                  donorName={"Jane Doe"}
-                  date={"May 12, 2026"}
-                  category={"Monetary Donation"}
-                  details={"R300.00"}
-                  items={[]}
-                ></DashboardItem>{" "}
-                <DashboardItem
-                  donorName={"Jane Doe"}
-                  date={"May 12, 2026"}
-                  category={"Food"}
-                  details={"14 Items"}
-                  items={items}
-                ></DashboardItem>{" "}
+                {RenderDonationCards()}
               </Stack>
             </Stack>
           </div>

@@ -4,6 +4,8 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 function DashboardItems({ donorName, date, category, details }) {
+  const donoDetails =
+    category === "Monetary Donation" ? `R${details}` : `${details} items`;
   return (
     <Row className="d-flex justify-content-between dashboardItem">
       <Col>
@@ -13,7 +15,7 @@ function DashboardItems({ donorName, date, category, details }) {
             <p style={{ marginBottom: "4px" }}>{date}</p>
             <p>{category}</p>
           </Stack>
-          <p>{details}</p>
+          <p>{donoDetails}</p>
         </Stack>
       </Col>
     </Row>

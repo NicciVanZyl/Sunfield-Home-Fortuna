@@ -7,37 +7,73 @@ import { useEffect, useState } from "react";
 import ItemDonation from "../components/donationItem";
 import MoneyDonation from "../components/paymentModal";
 import { Link } from "react-router-dom";
-
-const items = [
-  "Butter",
-  "Eggs",
-  "Milk",
-  "Vitamins",
-  "Diapers",
-  "Toilet Paper",
-  "Fruits",
-  "Vegetables",
-  "Cereal",
-  "Toothpaste",
-];
-const half = Math.ceil(items.length / 2);
+import ErrorModal from "../components/errorModal";
+import SuccessModal from "../components/successModal";
+import { BASE_URL, authHeader } from "../context/api";
+import axios from "axios";
 
 function Donate() {
+  const [items, setItems] = useState([]);
+  const half = Math.ceil(items.length / 2);
   const [paymentOpen, setPaymentOpen] = useState(false);
   const [itemOpen, setItemOpen] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [message, setMessage] = useState("");
 
+  const GetWishlistItems = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/wishlist/items`, authHeader());
+      const tempItems = res.data.filter((e) => !e.isComplete);
+      setItems(tempItems.map((item) => item.itemName));
+    } catch (error) {
+      console.log(error.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    GetWishlistItems();
+  }, []);
+
+  const handleSuccess = () => {
+    setShowSuccess(true);
+  };
+  const handleError = (errorMessage) => {
+    setMessage(errorMessage);
+    setShowError(true);
+  };
+
+  const handleModalClose = () => {
+    setShowError(false);
+    setShowSuccess(false);
+  };
   return (
     <Container fluid className="PageBackgroundYellow">
       <MoneyDonation
         open={paymentOpen}
         setClosed={() => setPaymentOpen(false)}
+        onAdded={handleSuccess}
+        onError={(errorMessage) => handleError(errorMessage)}
       ></MoneyDonation>
 
       <ItemDonation
         open={itemOpen}
         setClosed={() => setItemOpen(false)}
+        onAdded={handleSuccess}
+        onError={(errorMessage) => handleError(errorMessage)}
       ></ItemDonation>
 
+      <ErrorModal
+        show={showError}
+        onClose={handleModalClose}
+        message={message}
+      ></ErrorModal>
+      <SuccessModal
+        show={showSuccess}
+        onClose={handleModalClose}
+        title={"Donation Complete!"}
+        message={"Thank you for your donation! Your support is appreciated"}
+      ></SuccessModal>
       <div className="donateHero">
         <Row className="homeHeroGradient">
           <Col lg="8">
