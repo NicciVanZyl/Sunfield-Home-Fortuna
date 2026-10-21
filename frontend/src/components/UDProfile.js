@@ -17,6 +17,7 @@ import axios from "axios";
 import { useAuth } from "../context/authContext";
 import { format } from "date-fns";
 import SuccessModal from "../components/successModal";
+import { useNavigate } from "react-router-dom";
 
 const EMPTY_FORM = {
   firstName: "",
@@ -30,6 +31,7 @@ const EMPTY_FORM = {
 
 function UDProfile({ setActivePage }) {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
   const [validated, setValidated] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -93,6 +95,9 @@ function UDProfile({ setActivePage }) {
     }
   };
   useEffect(() => {
+    if (!user) {
+      navigate("/");
+    }
     GetUserInfo();
   }, []);
 

@@ -165,6 +165,7 @@ function UDOverview({ setActivePage }) {
     setShowSuccess(false);
     window.location.reload();
   };
+  if (!user) return null;
   return (
     <>
       <DonationType

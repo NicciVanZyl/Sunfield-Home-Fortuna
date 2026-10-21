@@ -294,7 +294,6 @@ function DashboardNav() {
         <button
           className="userLogout"
           onClick={() => {
-            logout();
             setMessage(
               "You've been logged out successfully. You will be redirected to the Login Page shortly ",
             );
@@ -311,6 +310,7 @@ function DashboardNav() {
   const handleModalClose = () => {
     setShowModal(false);
     navigate("/");
+    logout();
   };
   return (
     <ThemeProvider theme={theme}>
