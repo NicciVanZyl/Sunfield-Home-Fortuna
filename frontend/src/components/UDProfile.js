@@ -14,6 +14,9 @@ import Button from "react-bootstrap/Button";
 import InputGroup from "react-bootstrap/InputGroup";
 import { BASE_URL, authHeader } from "../context/api";
 import axios from "axios";
+import { useAuth } from "../context/authContext";
+import { format } from "date-fns";
+import SuccessModal from "../components/successModal";
 
 const EMPTY_FORM = {
   firstName: "",
@@ -26,11 +29,72 @@ const EMPTY_FORM = {
 };
 
 function UDProfile({ setActivePage }) {
+  const { user } = useAuth();
   const [editing, setEditing] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
   const [validated, setValidated] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [formData, setFormData] = useState(EMPTY_FORM);
+  const confirmRef = useRef(null);
+  const [showModal, setShowModal] = useState(false);
+  const [userData, setUserData] = useState({
+    firstName: "",
+    lastName: "",
+    number: "",
+    email: "",
+    location: "",
+    createdAt: "",
+  });
+
+  const GetUserInfo = async () => {
+    try {
+      const res = await axios.get(
+        `${BASE_URL}/users/${user.userID}`,
+        authHeader(),
+      );
+      setUserData({
+        firstName: res.data.firstName,
+        lastName: res.data.lastName,
+        number: res.data.number,
+        email: res.data.email,
+        location: res.data.location,
+        createdAt: format(new Date(res.data.createdAt), "dd MMM yyyy"),
+      });
+      setFormData({
+        ...EMPTY_FORM,
+        firstName: res.data.firstName,
+        lastName: res.data.lastName,
+        phoneNumber: res.data.number,
+        email: res.data.email,
+        location: res.data.location,
+      });
+    } catch (error) {
+      console.log(error.response?.data?.error);
+    }
+  };
+  const UpdateUserInfo = async (inputData) => {
+    const payload = {
+      firstName: inputData.firstName,
+      lastName: inputData.lastName,
+      number: inputData.phoneNumber,
+      email: inputData.email,
+      location: inputData.location,
+    };
+    if (inputData.password) payload.password = inputData.password;
+
+    try {
+      await axios.put(
+        `${BASE_URL}/users/${user.userID}`,
+        payload,
+        authHeader(),
+      );
+    } catch (error) {
+      console.log(error.response?.data?.error);
+    }
+  };
+  useEffect(() => {
+    GetUserInfo();
+  }, []);
 
   const renderToggle = (show, setShow, label) => (
     <Button
@@ -44,9 +108,6 @@ function UDProfile({ setActivePage }) {
       {show ? <Eye aria-hidden="true" /> : <EyeSlash aria-hidden="true" />}
     </Button>
   );
-  const [formData, setFormData] = useState(EMPTY_FORM);
-
-  const confirmRef = useRef(null);
 
   useEffect(() => {
     if (confirmRef.current) {
@@ -55,33 +116,34 @@ function UDProfile({ setActivePage }) {
         mismatch ? "Passwords do not match" : "",
       );
     }
-  }, [formData.password, formData.confirmPassword, isLogin]);
+  }, [formData.password, formData.confirmPassword]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
-
     setValidated(true);
     if (!form.checkValidity()) return;
 
-    const inputData = isLogin
-      ? { email: formData.email, password: formData.password }
-      : { ...formData };
-
-    console.log(inputData);
+    await UpdateUserInfo({ ...formData });
+    await GetUserInfo();
+    setValidated(false);
+    setEditing(false);
+    setShowModal(true);
   };
 
   const ProfileDetails = () => {
     if (!editing) {
       return (
         <Stack>
-          <h4>Jane Doe</h4>
-          <h6 className="mb-4">Donor since - 26 March 2026</h6>
+          <h4>
+            {userData.firstName} {userData.lastName}
+          </h4>
+          <h6 className="mb-4">Donor since - {userData.createdAt}</h6>
           <Row className="mb-4">
             <Col sm={3}>
               <div className="d-flex flex-row align-items-center">
@@ -91,12 +153,12 @@ function UDProfile({ setActivePage }) {
             </Col>
             <Col sm={8}>
               <div className="d-flex flex-row align-items-center">
-                <p className="contactInfoFooter">JaneDoe@gmail.com</p>
+                <p className="contactInfoFooter">{userData.email}</p>
               </div>
             </Col>
           </Row>
-          <Row>
-            <Col sm={3} className="mb-4">
+          <Row className="mb-4">
+            <Col sm={3} className="">
               <div className="d-flex flex-row align-items-center">
                 <img src={Phone}></img>
                 <p className="contactInfoFooter">Phone Number</p>
@@ -104,12 +166,14 @@ function UDProfile({ setActivePage }) {
             </Col>
             <Col sm={8}>
               <div className="d-flex flex-row align-items-center">
-                <p className="contactInfoFooter">+27 875088764</p>
+                <p className="contactInfoFooter">
+                  {userData.number ? userData.number : "No number available"}
+                </p>
               </div>
             </Col>
           </Row>
-          <Row>
-            <Col sm={3} className="mb-4">
+          <Row className="mb-4">
+            <Col sm={3}>
               <div className="d-flex flex-row align-items-center">
                 <img src={Location}></img>
                 <p className="contactInfoFooter">Location</p>
@@ -118,7 +182,9 @@ function UDProfile({ setActivePage }) {
             <Col sm={8}>
               <div className="d-flex flex-row align-items-center">
                 <p className="contactInfoFooter">
-                  1297 John Vorster Dr, Southdowns, Centurion
+                  {userData.location
+                    ? userData.location
+                    : "No location available"}
                 </p>
               </div>
             </Col>
@@ -273,25 +339,18 @@ function UDProfile({ setActivePage }) {
                 <Form.Group className="input-field" controlId="password">
                   <InputGroup hasValidation>
                     <Form.Control
-                      required
                       type={showPassword ? "text" : "password"}
                       name="password"
                       value={formData.password}
                       placeholder="••••••••"
-                      // Only enforce a minimum length when creating an account,
-                      // so existing users with shorter passwords can still log in
-                      minLength={isLogin ? undefined : 8}
-                      autoComplete={
-                        isLogin ? "current-password" : "new-password"
-                      }
+                      minLength={8}
+                      autoComplete={"new-password"}
                       onChange={handleChange}
                       className="profileInputs"
                     />
                     {renderToggle(showPassword, setShowPassword, "password")}
                     <Form.Control.Feedback type="invalid">
-                      {isLogin
-                        ? "Please enter your password."
-                        : "Password must be at least 8 characters."}
+                      {"Password must be at least 8 characters."}
                     </Form.Control.Feedback>
                   </InputGroup>
                 </Form.Group>
@@ -311,7 +370,6 @@ function UDProfile({ setActivePage }) {
                   <InputGroup hasValidation>
                     <Form.Control
                       ref={confirmRef}
-                      required
                       type={showConfirm ? "text" : "password"}
                       name="confirmPassword"
                       value={formData.confirmPassword}
@@ -339,26 +397,42 @@ function UDProfile({ setActivePage }) {
       );
     }
   };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+  };
+
   return (
     <Container fluid className="adminPageBackground">
+      <SuccessModal
+        show={showModal}
+        onClose={handleModalClose}
+        title={"Details Updated Successfully!"}
+        message={"Your account information has been updated successfully."}
+      ></SuccessModal>
       <Row className="mx-auto d-flex flex-row">
         <h3>Profile</h3>
       </Row>
 
       <Row className="my-5">
         <Form noValidate validated={validated} onSubmit={handleSubmit}>
-          <Col sx={12} className="mb-5">
+          <Col xs={12} className="mb-5">
             <div className="homeCards">{ProfileDetails()}</div>
-            <Col className="mt-5 mx-auto " sm={3}>
-              <button
-                className="userLogout"
-                type={!editing ? "button" : "submit"}
-                onClick={() => {
-                  !editing ? setEditing(true) : setEditing(false);
-                }}
-              >
-                {!editing ? "Edit Details" : "Save Details"}
-              </button>
+            <Col className="mt-5 mx-auto" sm={3}>
+              {editing ? (
+                <button key="save" className="userLogout" type="submit">
+                  Save Details
+                </button>
+              ) : (
+                <button
+                  key="edit"
+                  className="userLogout"
+                  type="button"
+                  onClick={() => setEditing(true)}
+                >
+                  Edit Details
+                </button>
+              )}
             </Col>
           </Col>
         </Form>

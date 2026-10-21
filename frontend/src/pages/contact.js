@@ -3,9 +3,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ContactInfoImage from "../assets/images/ContactImage.png";
-import Arrow from "../assets/images/Arrow.svg";
 import DonateImage from "../assets/images/DonateImage.png";
-import HomeCards from "../components/homePageCards";
 import QAAccordion from "../components/accordion";
 import Mail from "../assets/images/mail.svg";
 import Location from "../assets/images/Location.svg";
@@ -52,12 +50,12 @@ function Contact() {
         </Col>
       </Row>
       <Row className="homeSection mx-4 py-5 ">
-        <Col lg={6} className="mx-auto ">
+        <Col lg={6} className="mx-auto mb-3">
           <div className="ImageContainers">
             <img src={DonateImage} className="Images"></img>
           </div>
         </Col>
-        <Col lg={6} className="d-flex flex-column">
+        <Col lg={6} className="d-flex flex-column mb-3">
           <Stack className="mx-auto ContactCards justify-content-center">
             <h3>FAQ</h3>
             <h5 style={{ marginBottom: "2rem" }}>Quick Answers</h5>

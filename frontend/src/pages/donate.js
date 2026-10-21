@@ -123,7 +123,7 @@ function Donate() {
 
       <Row className="homeSection mx-4 py-5 ">
         <Col lg={12} className="">
-          <div className="d-flex flex-lg-row flex-column justify-content-between align-items-center homeCards contactCard">
+          <div className="d-flex flex-lg-row flex-column justify-content-between align-items-center homeCards contactCard gap-3">
             <p>Have questions? We are here to help.</p>
             <Link to="/Contact" className="blueButton">
               Contact us <img src={Arrow}></img>

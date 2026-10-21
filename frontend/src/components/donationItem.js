@@ -240,11 +240,11 @@ function ItemDonation({ open, setClosed, onAdded, onError }) {
     return Array.from({ length: itemAmount }, (_, i) => (
       <>
         <Row className="d-flex justify-content-between align-items-center itemDonateItems">
-          <Col sm={3}>{selectedItems[i]?.name ?? ""}</Col>
-          <Col sm={3} style={{ textAlign: "center" }}>
+          <Col xs={4}>{selectedItems[i]?.name ?? ""}</Col>
+          <Col xs={3} style={{ textAlign: "center" }}>
             {selectedItems[i]?.quality ?? ""}
           </Col>
-          <Col sm={3} style={{ textAlign: "center" }}>
+          <Col xs={3} style={{ textAlign: "center" }}>
             {selectedItems[i]?.quantity ?? ""}
           </Col>
         </Row>
@@ -311,11 +311,11 @@ function ItemDonation({ open, setClosed, onAdded, onError }) {
           <div className="paymentCards">
             {" "}
             <Row className="d-flex justify-content-between align-items-center donateSummary">
-              <Col sm={3}>Item Name</Col>
-              <Col sm={3} style={{ textAlign: "center" }}>
+              <Col xs={4}>Item Name</Col>
+              <Col xs={3} style={{ textAlign: "center" }}>
                 Quality
               </Col>
-              <Col sm={3} style={{ textAlign: "center" }}>
+              <Col xs={3} style={{ textAlign: "center" }}>
                 Quantity
               </Col>
             </Row>

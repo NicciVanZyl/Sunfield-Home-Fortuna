@@ -55,8 +55,6 @@ function UDOverview({ setActivePage }) {
     if (!donationData || donationData.length === 0) {
       return <p>No Items Donated Yet</p>;
     } else {
-      console.log(sortedData);
-
       return sortedData
         .slice(0, 4)
         .map((d) => (

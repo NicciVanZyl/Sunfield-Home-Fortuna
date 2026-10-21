@@ -1,7 +1,8 @@
 // Models = all SQL lives here. Always use .input() (parameters) to prevent SQL injection.
 const { sql, getPool } = require("../config/db");
 
-const PUBLIC_COLUMNS = "userID, firstName, lastName, email, userRole,createdAt"; // never return PasswordHash
+const PUBLIC_COLUMNS =
+  "userID, firstName, lastName, email, userRole, createdAt, location, number"; // never return PasswordHash
 
 const getAll = async () => {
   const pool = await getPool();
@@ -15,7 +16,7 @@ const findById = async (id) => {
   const pool = await getPool();
   const result = await pool
     .request()
-    .input("userID", sql.Int, id)
+    .input("id", sql.Int, id)
     .query(`SELECT ${PUBLIC_COLUMNS} FROM users WHERE userID = @id`);
   return result.recordset[0];
 };
@@ -58,18 +59,28 @@ const update = async (
   { firstName, lastName, email, passwordHash, location, number },
 ) => {
   const pool = await getPool();
-  const result = await pool
+  const request = pool
     .request()
-    .input("userID", sql.Int, id)
+    .input("id", sql.Int, id)
     .input("firstName", sql.NVarChar(100), firstName)
     .input("lastName", sql.NVarChar(100), lastName)
-    .input("userPassword", sql.NVarChar(255), passwordHash)
     .input("email", sql.NVarChar(255), email)
     .input("location", sql.NVarChar(255), location)
-    .input("number", sql.NVarChar(10), number)
-    .query(`UPDATE users SET firstName = @firstName, lastName = @lastName, email = @email, userPassword = @passwordHash, location = @location, number = @number
-            OUTPUT INSERTED.userID, INSERTED.firstName,INSERTED.lastName, INSERTED.email, INSERTED.userRole, INSERTED.location, INSERTED.number
-            WHERE userID = @id`);
+    .input("number", sql.NVarChar(10), number);
+
+  let passwordClause = "";
+  if (passwordHash) {
+    request.input("passwordHash", sql.NVarChar(255), passwordHash);
+    passwordClause = ", userPassword = @passwordHash";
+  }
+
+  const result = await request.query(`
+    UPDATE users
+    SET firstName = @firstName, lastName = @lastName, email = @email,
+        location = @location, number = @number ${passwordClause}
+    OUTPUT INSERTED.userID, INSERTED.firstName, INSERTED.lastName, INSERTED.email,
+           INSERTED.userRole, INSERTED.location, INSERTED.number
+    WHERE userID = @id`);
   return result.recordset[0];
 };
 

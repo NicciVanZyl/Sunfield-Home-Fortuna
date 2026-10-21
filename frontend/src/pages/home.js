@@ -101,12 +101,12 @@ function Home() {
         </Col>
       </Row>
       <Row className="homeSection mx-4 py-5 ">
-        <Col lg={6} className="mx-auto ">
+        <Col lg={6} className="mx-auto mb-3">
           <div className="ImageContainers">
             <img src={MissionImage} className="Images"></img>
           </div>
         </Col>
-        <Col lg={6} className="d-flex flex-column">
+        <Col lg={6} className="d-flex flex-column mb-3">
           <Stack className="mx-auto homeCards justify-content-center">
             <h3>Our Mission</h3>
             <p className="HomeBodyText">
@@ -125,7 +125,7 @@ function Home() {
       </Row>
       <Row className="homeSection mx-4 py-5 ">
         <Col lg={12} className="">
-          <div className="d-flex flex-lg-row flex-column justify-content-between align-items-center homeCards contactCard">
+          <div className="d-flex flex-lg-row flex-column justify-content-between align-items-center homeCards contactCard gap-3">
             <p>Have questions? We are here to help.</p>
             <Link to="/Contact" className="blueButton">
               Contact us <img src={Arrow}></img>
