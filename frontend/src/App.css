@@ -39,6 +39,7 @@
 .contactInfoFooter {
   margin: 0;
   margin-left: 1rem;
+  overflow-wrap: anywhere;
 }
 
 .pageLinks {
