@@ -1,3 +1,7 @@
 # https://www.robotstxt.org/robotstxt.html
+# Allow all search engine crawlers to access all pages
 User-agent: *
-Disallow:
+Allow: /
+
+# Link directly to your sitemap location
+Sitemap: https://polite-beach-0c34c961e.5.azurestaticapps.net/sitemap.xml
