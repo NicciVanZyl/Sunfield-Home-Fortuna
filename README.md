@@ -24,7 +24,6 @@
 
 ### Built with:
 [![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?logo=github-actions&logoColor=white)](#)
-[![AWS](https://custom-icon-badges.demolab.com/badge/AWS-%23FF9900.svg?logo=aws&logoColor=white)](#)
 [![Microsoft Azure](https://custom-icon-badges.demolab.com/badge/Microsoft%20Azure-0089D6?logo=msazure&logoColor=white)](#)
 [![Visual Studio Code](https://custom-icon-badges.demolab.com/badge/Visual%20Studio%20Code-0078d7.svg?logo=visualstudiocode&logoColor=white)](#)
 [![Microsoft SQL Server](https://custom-icon-badges.demolab.com/badge/Microsoft%20SQL%20Server-CC2927?logo=mssqlserver-white&logoColor=white)](#)
@@ -203,8 +202,8 @@ npm start for the frontend on local host
 #### Azure Cloud Deployment
 [Sunfield Home Fortuna Azure](https://polite-beach-0c34c961e.5.azurestaticapps.net/)
 
-#### AWS Deployment
-[Sunfield Home Fortuna AWS](https://polite-beach-0c34c961e.5.azurestaticapps.net/)
+#### Google Cloud Platform Deployment
+[Sunfield Home Fortuna Google Cloud Platform](https://sunfield-fortuna-service-673714714255.africa-south1.run.app)
 
 ---
 
