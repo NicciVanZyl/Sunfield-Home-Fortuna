@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const path = require("path");
 const cors = require("cors");
 const { getPool } = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
@@ -24,6 +25,13 @@ app.use("/api/users", userRoutes);
 app.use("/api/donations", donationRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 
+app.use(express.static(path.join(__dirname, "client/build")));
+
+// Client-side routing fallback (keeps React Router working on refresh)
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.join(__dirname, "client/build", "index.html"));
+});
+
 //error handling middleware
 app.use(notFound);
 app.use(errorHandler);
@@ -35,4 +43,13 @@ app.listen(PORT, () => {
   getPool().catch((err) =>
     console.error("Initial DB connection failed:", err.message),
   );
+});
+
+app.get("/api/health", (req, res) => {
+  res.json({ status: "API is running" });
+});
+
+// Update your app.listen to bind to 0.0.0.0 for Cloud Run
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server listening on port ${PORT}`);
 });
